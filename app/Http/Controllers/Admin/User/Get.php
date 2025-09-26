@@ -10,7 +10,7 @@ class Get extends Controller
 {
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::paginate(5);
         $from = ($users->currentPage() - 1) * $users->perPage() + 1;
         $roleColors = [
             'admin' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
@@ -18,13 +18,13 @@ class Get extends Controller
         ];
 
         // dd($users,$users->onLastPage(),$users->onFirstPage());
-        return view('admin.user.index', 
+        return view('admin.user.index',
             [
-                'users' => $users, 
-                'total' => $users->total(), 
-                'from' => $from, 
-                'to' => $from - 1 + $users->count(), 
-                'roleColors' => $roleColors, 
+                'users' => $users,
+                'total' => $users->total(),
+                'from' => $from,
+                'to' => $from - 1 + $users->count(),
+                'roleColors' => $roleColors,
                 'isFirstPage' => $users->onFirstPage(),
                 'isLastPage' => $users->onLastPage(),
                 'currentPage' => $users->currentPage(),
@@ -34,5 +34,10 @@ class Get extends Controller
                 'prevPage' => $users->previousPageUrl()
             ]
         );
+    }
+
+    public function create()
+    {
+        return view('admin.user.create');
     }
 }

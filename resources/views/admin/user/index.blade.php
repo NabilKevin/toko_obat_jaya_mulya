@@ -6,8 +6,8 @@
 @section('content')
 <!-- Added mobile-responsive padding and layout optimizations -->
 @if(session('success'))
-    <div class="alert absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50">
-        {{ session('success') }}
+    <div class="alert alertAnimate absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50">
+        {{ session('success') ?? 'Berhasil!' }}
     </div>
 @endif
 
@@ -18,7 +18,7 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Data User</h1>
             <p class="text-sm sm:text-base text-muted-foreground">Kelola data pengguna sistem</p>
         </div>
-        <button onclick="openModal('userModal')" 
+        <button onclick="window.location.href='{{ route('user.create') }}'" id="createUser"
                 class="group relative bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             <i data-lucide="plus" class="mr-2.5 h-5 w-5 transition-transform duration-300 group-hover:rotate-90"></i>
@@ -30,13 +30,13 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <div class="relative">
-                <input type="text" 
+                <input type="text"
                        placeholder="Cari user berdasarkan nama atau email..."
                        class="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
                 <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
             </div>
         </div>
-        
+
         <!-- Made table responsive with horizontal scroll and mobile card layout -->
         <div class="overflow-x-auto">
             <!-- Desktop Table View -->
@@ -109,13 +109,13 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div class="space-y-3">
                             <div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium mb-1">Nama</p>
                                 <p class="text-sm text-gray-900 dark:text-gray-100">{{ $user['nama'] }}</p>
                             </div>
-                            
+
                             <div class="flex flex-wrap gap-3">
                                 <div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium mb-1">Role</p>
@@ -135,7 +135,7 @@
                 <div class="text-sm text-gray-700 dark:text-gray-300 text-center sm:text-left">
                     Menampilkan <span class="font-medium">{{ $from }}</span> sampai <span class="font-medium">{{ $to }}</span> dari <span class="font-medium">{{ $total }}</span> hasil
                 </div>
-                
+
                 <!-- Smart Pagination Component -->
                 <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
                     <!-- Mobile Page Info -->
@@ -143,7 +143,7 @@
                         Halaman 25 dari 50
                         Menampilkan {{ $currentPage }} dari {{ $total }}
                     </div>
-                    
+
                     <!-- Pagination Controls -->
                     <div class="flex items-center space-x-1 sm:space-x-2">
                         <!-- First Page -->
@@ -151,24 +151,24 @@
                             <i data-lucide="chevrons-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
                             <span class="hidden lg:inline ml-1">First</span>
                         </button>
-                        
+
                         <!-- Previous Page -->
                         <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isFirstPage) onclick="window.location.href='{{ $prevPage }}'">
                             <i data-lucide="chevron-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
                             <span class="hidden sm:inline ml-1">Prev</span>
                         </button>
-                        
+
                         <div class="flex items-center space-x-1">
                             <!-- Current page -->
                             <button class="px-3 py-2.5 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium shadow-md min-h-[48px] ring-2 ring-blue-200 dark:ring-blue-800">{{ $currentPage }}</button>
                         </div>
-                        
+
                         <!-- Next Page -->
                         <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $nextPage }}'">
                             <span class="hidden sm:inline mr-1">Next</span>
                             <i data-lucide="chevron-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
                         </button>
-                        
+
                         <!-- Last Page -->
                         <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $lastPage }}'">
                             <span class="hidden lg:inline mr-1">Last</span>
@@ -177,7 +177,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Mobile Quick Navigation -->
             <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex justify-center space-x-2">
@@ -193,108 +193,30 @@
     </div>
 </div>
 
-{{-- Made modal responsive for mobile --}}
-<div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-background rounded-lg p-4 sm:p-6 w-full max-w-md border border-border max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg sm:text-xl font-semibold text-foreground">Tambah User</h2>
-            <button onclick="closeModal('userModal')" class="text-muted-foreground hover:text-foreground p-2 -m-2 min-h-[48px] min-w-[48px] flex items-center justify-center">
-                <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-        </div>
-        
-        <form action="{{ route('user.store') }}" method="POST" class="space-y-4">
-            @csrf
-            <div>
-                <label class="block text-sm font-medium text-foreground mb-1">Nama</label>
-                <input aria-invalid="true" name="nama" value="{{ old('nama') }}" type="text" class="{{ $errors->has('nama') ? 'border border-red-500' : '' }} w-full px-3 py-3 bg-muted border border-border rounded-md text-foreground min-h-[48px]">
-                @error('nama')
-                    <p class="text-red-500 text-s font-medium italic mt-2 mb-0">{{ $message }}</p>
-                @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-foreground mb-1">Username</label>
-                <input name="username" type="text" value="{{ old('username') }}" type="text" class="{{ $errors->has('username') ? 'border border-red-500' : '' }} w-full px-3 py-3 bg-muted border border-border rounded-md text-foreground min-h-[48px]">
-                @error('username')
-                    <p class="text-red-500 text-s font-medium italic mt-2 mb-0">{{ $message }}</p>
-                @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-foreground mb-1">Password</label>
-                <div class="relative">
-                    <input id="passwordField" min="8" name="password" type="password" value="{{ old('password') }}" class="{{ $errors->has('password') ? 'border border-red-500' : '' }} w-full px-3 py-3 pr-12 bg-muted border border-border rounded-md text-foreground min-h-[48px]" placeholder="Masukkan password">
-                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200 p-1 min-h-[40px] min-w-[40px] flex items-center justify-center">
-                        <i data-lucide="eye" id="eyeIcon" class="h-5 w-5"></i>
-                        <i data-lucide="eye-off" id="eyeOffIcon" class="h-5 w-5 hidden"></i>
-                    </button>
-                </div>
-                @error('password')
-                    <p class="text-red-500 text-s font-medium italic mt-2 mb-0">{{ $message }}</p>
-                @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-foreground mb-1">Role</label>
-                <select name="role" value="{{ old('role') }}" type="text" class="{{ $errors->has('role') ? 'border border-red-500' : '' }} w-full px-3 py-3 bg-muted border border-border rounded-md text-foreground min-h-[48px]">
-                    <option selected value="admin">Admin</option>
-                    <option value="kasir">Kasir</option>
-                </select>
-                @error('role')
-                    <p class="text-red-500 text-s font-medium italic mt-2 mb-0">{{ $message }}</p>
-                @enderror
-            </div>
-            
-            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 pt-4">
-                <button type="submit" class="group flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
-                    <span class="flex items-center justify-center">
-                        <i data-lucide="check" class="h-4 w-4 mr-2 transition-transform duration-200 group-hover:scale-110"></i>
-                        Simpan
-                    </span>
-                </button>
-                <button type="button" onclick="closeModal('userModal')" 
-                        class="group flex-1 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 dark:from-gray-700 dark:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
-                    <span class="flex items-center justify-center">
-                        <i data-lucide="x" class="h-4 w-4 mr-2 transition-transform duration-200 group-hover:scale-110"></i>
-                        Batal
-                    </span>
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-@if($errors->any())
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            openModal('userModal'); // function JS untuk buka modal
-        });
-    </script>
-@endif
 <script>
     function togglePassword() {
-    const passwordField = document.getElementById('passwordField');
-    const eyeIcon = document.getElementById('eyeIcon');
-    const eyeOffIcon = document.getElementById('eyeOffIcon');
-    
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.add('hidden');
-        eyeOffIcon.classList.remove('hidden');
-    } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('hidden');
-        eyeOffIcon.classList.add('hidden');
+        const passwordField = document.getElementById('passwordField');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.add('hidden');
+            eyeOffIcon.classList.remove('hidden');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('hidden');
+            eyeOffIcon.classList.add('hidden');
+        }
     }
-}
 
-function openModal(modalId) {
-    document.getElementById(modalId).classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
+    document.getElementById('createUser').addEventListener('click', function() {
+        setTimeout(() => {
+            this.disabled = true;
+            this.style.opacity = '0.5';
+            this.style.cursor = 'not-allowed';
+        }, 1)
+    });
 </script>
 
 @endsection
