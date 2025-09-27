@@ -16,10 +16,17 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Obat</p>
-                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">1,234</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalObat }}</p>
                     <p class="text-xs text-blue-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                        <span class="truncate">+12% dari bulan lalu</span>
+                        @if($totalKenaikanObat > 0)
+                            <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">+{{ $totalKenaikanObat }}% dari bulan lalu</span>
+                        @elseif ($totalKenaikanObat < 0)
+                            <i data-lucide="trending-down" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">{{ $totalKenaikanObat }}% dari bulan lalu</span>
+                        @else
+                            <span class="truncate">Tidak ada perubahan dari bulan lalu</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0 ml-3">
@@ -33,10 +40,17 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Penjualan Hari Ini</p>
-                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">Rp 2,450,000</p>
-                    <p class="text-xs text-green-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                        <span class="truncate">+8% dari kemarin</span>
+                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">Rp {{ $penjualanHariIni }}</p>
+                    <p class="text-xs text-{{ $totalKenaikanPenjualan > 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
+                        @if($totalKenaikanPenjualan > 0)
+                            <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">+{{ $totalKenaikanPenjualan }}% dari kemarin</span>
+                        @elseif ($totalKenaikanPenjualan < 0)
+                            <i data-lucide="trending-down" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">{{ $totalKenaikanPenjualan }}% dari kemarin</span>
+                        @else
+                            <span class="truncate">Tidak ada perubahan dari kemarin</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 flex-shrink-0 ml-3">
@@ -50,10 +64,14 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Stok Menipis</p>
-                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">23</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalStokMenipis }}</p>
                     <p class="text-xs text-yellow-500 mt-1 flex items-center">
-                        <i data-lucide="alert-triangle" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                        <span class="truncate">Perlu perhatian</span>
+                        @if ($totalStokMenipis > 0)
+                            <i data-lucide="alert-triangle" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">Perlu perhatian</span>
+                        @else
+                            <span class="truncate">Semua stok dalam kondisi aman</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/25 flex-shrink-0 ml-3">
@@ -67,10 +85,10 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total User</p>
-                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">156</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalUser }}</p>
                     <p class="text-xs text-purple-500 mt-1 flex items-center">
                         <i data-lucide="users" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                        <span class="truncate">+5 user baru</span>
+                        <span class="truncate">+{{ $totalKenaikanUser }} user baru</span>
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 flex-shrink-0 ml-3">
@@ -90,56 +108,30 @@
                 </div>
             </div>
             <div class="h-48 sm:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200/30 dark:border-blue-700/30">
-                <div class="text-center">
-                    <i data-lucide="bar-chart-3" class="h-10 w-10 sm:h-12 sm:w-12 text-blue-500 mx-auto mb-2"></i>
-                    <p class="font-medium text-sm sm:text-base">Chart akan ditampilkan di sini</p>
-                    <p class="text-xs sm:text-sm">Grafik penjualan mingguan</p>
-                </div>
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
 
         <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h3 class="text-base sm:text-lg font-semibold text-foreground">Overview Inventory</h3>
-                <span class="text-xs sm:text-sm text-muted-foreground bg-slate-200/50 dark:bg-slate-700/50 px-2 py-1 rounded-full">1,200 total</span>
+                <span class="text-xs sm:text-sm text-muted-foreground bg-slate-200/50 dark:bg-slate-700/50 px-2 py-1 rounded-full">{{ $totalStokObat }} total</span>
             </div>
             <div class="space-y-3 sm:space-y-4">
-                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-foreground">Analgesik</span>
-                        <span class="text-sm font-bold text-foreground">450 unit</span>
+                @php 
+                    $colors = ['green', 'blue', 'purple', 'yellow'];
+                @endphp
+                @foreach ($overviewObats as $i => $d)
+                    <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-foreground">{{ $d['nama'] }}</span>
+                            <span class="text-sm font-bold text-foreground">{{ $d['stok'] }} unit</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-{{ $colors[$i] }}-500 to-{{ $colors[$i] }}-600 h-2 rounded-full" style="width: {{ $d['stok']/$totalStokObat *100 }}%"></div>
+                        </div>
                     </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 75%"></div>
-                    </div>
-                </div>
-                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-foreground">Antibiotik</span>
-                        <span class="text-sm font-bold text-foreground">320 unit</span>
-                    </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: 60%"></div>
-                    </div>
-                </div>
-                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-foreground">Vitamin</span>
-                        <span class="text-sm font-bold text-foreground">280 unit</span>
-                    </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style="width: 50%"></div>
-                    </div>
-                </div>
-                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-foreground">Antasida</span>
-                        <span class="text-sm font-bold text-foreground">150 unit</span>
-                    </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2 rounded-full" style="width: 25%"></div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -147,11 +139,6 @@
     <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div class="flex items-center justify-between mb-4 sm:mb-6">
             <h3 class="text-base sm:text-lg font-semibold text-foreground">Transaksi Terbaru</h3>
-            <button class="text-sm text-blue-500 hover:text-blue-600 font-medium flex items-center transition-colors duration-200 active:scale-95">
-                <span class="hidden sm:inline">Lihat semua</span>
-                <span class="sm:hidden">Semua</span>
-                <i data-lucide="arrow-right" class="h-4 w-4 ml-1"></i>
-            </button>
         </div>
         <div class="overflow-x-auto -mx-4 sm:mx-0">
             <div class="inline-block min-w-full align-middle">
@@ -166,85 +153,81 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors duration-200 active:bg-slate-100/50 dark:active:bg-slate-700/50">
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-mono font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">#001</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                                        <i data-lucide="pill" class="h-3 w-3 sm:h-4 sm:w-4 text-white"></i>
+                        @foreach ($transaksis as $transaksi)
+                            <tr class="border-b border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors duration-200 active:bg-slate-100/50 dark:active:bg-slate-700/50">
+                                <td class="py-3 sm:py-4 px-2">
+                                    <span class="text-xs sm:text-sm font-mono font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">#{{ $transaksi->id }}</span>
+                                </td>
+                                <td class="py-3 sm:py-4 px-2">
+                                    <div class="flex items-center">
+                                        <div class="min-w-0">
+                                            <span class="text-xs sm:text-sm font-medium text-foreground block truncate">{{ $transaksi->obat->nama }}</span>
+                                            <span class="text-xs text-muted-foreground sm:hidden">{{ $transaksi->qty }} unit</span>
+                                        </div>
                                     </div>
-                                    <div class="min-w-0">
-                                        <span class="text-xs sm:text-sm font-medium text-foreground block truncate">Paracetamol 500mg</span>
-                                        <span class="text-xs text-muted-foreground sm:hidden">2 unit</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden sm:table-cell">
-                                <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">2 unit</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp 10,000</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
-                                <span class="text-sm text-muted-foreground">2 menit lalu</span>
-                            </td>
-                        </tr>
-                        <tr class="border-b border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors duration-200 active:bg-slate-100/50 dark:active:bg-slate-700/50">
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-mono font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">#002</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                                        <i data-lucide="pill" class="h-3 w-3 sm:h-4 sm:w-4 text-white"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <span class="text-xs sm:text-sm font-medium text-foreground block truncate">Vitamin C 1000mg</span>
-                                        <span class="text-xs text-muted-foreground sm:hidden">1 unit</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden sm:table-cell">
-                                <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">1 unit</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp 12,000</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
-                                <span class="text-sm text-muted-foreground">5 menit lalu</span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors duration-200 active:bg-slate-100/50 dark:active:bg-slate-700/50">
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-mono font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">#003</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                                        <i data-lucide="pill" class="h-3 w-3 sm:h-4 sm:w-4 text-white"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <span class="text-xs sm:text-sm font-medium text-foreground block truncate">Amoxicillin 250mg</span>
-                                        <span class="text-xs text-muted-foreground sm:hidden">3 unit</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden sm:table-cell">
-                                <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">3 unit</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2">
-                                <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp 18,000</span>
-                            </td>
-                            <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
-                                <span class="text-sm text-muted-foreground">8 menit lalu</span>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="py-3 sm:py-4 px-2 hidden sm:table-cell">
+                                    <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">{{ $transaksi->qty }} unit</span>
+                                </td>
+                                <td class="py-3 sm:py-4 px-2">
+                                    <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp {{ $transaksi->subtotal }}</span>
+                                </td>
+                                <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
+                                    <span class="text-sm text-muted-foreground">{{ timeAgo($transaksi->created_at) }}</span>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+        type: 'line', // bisa 'bar', 'line', 'pie', dll.
+        data: {
+            labels: @json($chartLabels), // tanggal
+            datasets: [{
+                label: 'Total Penjualan',
+                data: @json($chartTotals), // total penjualan per tanggal
+                borderColor: '#FACC15',   // kuning keemasan
+                backgroundColor: 'rgba(250, 204, 21, 0.3)', // transparan
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.raw;
+                            return 'Rp ' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 @endsection
+

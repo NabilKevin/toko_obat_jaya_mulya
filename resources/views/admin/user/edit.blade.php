@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah User - Toko Obat Jaya Mulya')
-@section('page-title', 'Tambah User')
+@section('title', 'Edit User - Toko Obat Jaya Mulya')
+@section('page-title', 'Edit User')
 
 @section('content')
 <div class="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
@@ -11,16 +11,16 @@
             <i data-lucide="arrow-left" class="h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
         </a>
         <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Tambah User Baru</h1>
-            <p class="text-sm sm:text-base text-muted-foreground">Buat akun pengguna baru untuk sistem</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Edit User</h1>
+            <p class="text-sm sm:text-base text-muted-foreground">Edit akun pengguna</p>
         </div>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-6 sm:p-8 !pt-2">
-            <form action="{{ route('user.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('user.update', $user->id) }}" method="POST" class="space-y-6">
                 @csrf
-
+                @method('PUT')
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-foreground border-b border-border pb-2">Informasi Personal</h3>
 
@@ -30,7 +30,7 @@
                             <input type="text"
                                    id="nama"
                                    name="nama"
-                                   value="{{ old('nama') }}"
+                                   value="{{ old('nama', $user->nama) }}"
                                    required
                                    class="{{ $errors->has('nama') ? 'border-red-500' : 'border-gray-500' }} w-full px-4 py-3 bg-muted border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-base min-h-[48px]"
                                    placeholder="Masukkan nama">
@@ -44,7 +44,7 @@
                             <input type="text"
                                    id="text"
                                    name="username"
-                                   value="{{ old('username') }}"
+                                   value="{{ old('username', $user->username) }}"
                                    required
                                    class="{{ $errors->has('username') ? 'border-red-500' : 'border-gray-500' }} w-full px-4 py-3 bg-muted border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-base min-h-[48px]"
                                    placeholder="Masukkan username">
@@ -59,7 +59,6 @@
                                 <input type="password"
                                        id="password"
                                        name="password"
-                                       required
                                        class="{{ $errors->has('password') ? 'border-red-500' : 'border-gray-500' }} w-full px-4 py-3 pr-12 bg-muted border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-base min-h-[48px]"
                                        placeholder="Masukkan password">
                                 <button type="button"
@@ -81,7 +80,6 @@
                                 <input type="password"
                                        id="password_confirmation"
                                        name="password_confirmation"
-                                       required
                                        class="{{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-500' }} w-full px-4 py-3 pr-12 bg-muted border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-base min-h-[48px]"
                                        placeholder="Ulangi password">
                                 <button type="button"
@@ -103,10 +101,9 @@
                     <select id="role"
                             name="role"
                             required
-                            value="{{ old('role') }}"
                             class="{{ $errors->has('role') ? 'border-red-500' : 'border-gray-500' }} w-full px-4 py-3 bg-muted border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-base min-h-[48px]">
-                        <option value="admin">Admin</option>
-                        <option value="kasir">Kasir</option>
+                        <option value="admin" {{ $user->role == 'admin' || old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="kasir" {{ $user->role == 'kasir' || old('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
                     </select>
                     @error('role')
                         <p class="text-red-500 text-xs font-medium italic mt-2 mb-0">{{ $message }}</p>
@@ -118,7 +115,7 @@
                             class="group flex-1 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:-translate-y-0.5 min-h-[48px] active:scale-95">
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                         <i data-lucide="user-plus" class="mr-2.5 h-5 w-5 transition-transform duration-300 group-hover:scale-110"></i>
-                        <span class="relative z-10">Buat User</span>
+                        <span class="relative z-10">Edit User</span>
                     </button>
 
                     <a href="{{ route('user.index') }}"
@@ -157,11 +154,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordConfirmation = document.getElementById('password_confirmation');
 
     form.addEventListener('submit', function(e) {
-        if (password.value !== passwordConfirmation.value) {
+        if (password.value !== passwordConfirmation.value && password.value !== '') {
             e.preventDefault();
             alert('Password dan konfirmasi password tidak cocok!');
             passwordConfirmation.focus();
         } else {
+        }
+        
+        if(password.value == '') {
+
             document.querySelector('button[type=submit]').addEventListener('click', function() {
                 setTimeout(() => {
                     this.disabled = true;

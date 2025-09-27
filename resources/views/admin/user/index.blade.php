@@ -6,7 +6,7 @@
 @section('content')
 <!-- Added mobile-responsive padding and layout optimizations -->
 @if(session('success'))
-    <div class="alert alertAnimate absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50">
+    <div class="alert absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
         {{ session('success') ?? 'Berhasil!' }}
     </div>
 @endif
@@ -19,7 +19,7 @@
             <p class="text-sm sm:text-base text-muted-foreground">Kelola data pengguna sistem</p>
         </div>
         <button onclick="window.location.href='{{ route('user.create') }}'" id="createUser"
-                class="group relative bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
+                class="group relative bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white px-6 sm:px-5 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             <i data-lucide="plus" class="mr-2.5 h-5 w-5 transition-transform duration-300 group-hover:rotate-90"></i>
             <span class="relative z-10">Tambah User</span>
@@ -29,12 +29,28 @@
     <!-- Made search container mobile responsive -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-            <div class="relative">
-                <input type="text"
-                       placeholder="Cari user berdasarkan nama atau email..."
-                       class="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
-                <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
-            </div>
+            <!-- CHANGE> Added search button next to search input -->
+            <form class="flex space-x-3" action="{{ route('user.index') }}">
+                <div class="relative flex-1">
+                    <input type="text" 
+                            name="search"
+                            value="{{ $search }}"
+                            id="search"
+                            placeholder="Cari user berdasarkan nama atau username..."
+                            class="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
+                </div>
+                <button type="submit" class="group bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white px-3 sm:px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <span class="hidden sm:inline relative z-10">Cari</span>
+                    <i data-lucide="search" class="inline sm:hidden relative z-10"></i>
+                </button>
+                <button onclick="document.querySelector('#search').value = ''; input.closest('form').submit();" class="group bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white px-3 sm:px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <span class="hidden sm:inline relative z-10">Clear</span>
+                    <i data-lucide="x" class="inline sm:hidden relative z-10"></i>
+                </button>
+            </form>
         </div>
 
         <!-- Made table responsive with horizontal scroll and mobile card layout -->
@@ -73,12 +89,23 @@
                                 </td>
                                 <td class="py-4 px-6">
                                     <div class="flex space-x-2">
-                                        <button class="group inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform hover:scale-110">
+                                        <button onclick="window.location.href='{{ route('user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform hover:scale-110">
                                             <i data-lucide="edit" class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
                                         </button>
-                                        <button class="group inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform hover:scale-110">
-                                            <i data-lucide="trash-2" class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
-                                        </button>
+                                        <form action="{{ route('user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                class="group inline-flex items-center justify-center w-9 h-9 rounded-lg 
+                                                    bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 
+                                                    dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 
+                                                    dark:hover:to-red-900/50 text-red-600 dark:text-red-400 
+                                                    transition-all duration-200 hover:shadow-md transform hover:scale-110">
+                                                <i data-lucide="trash-2" 
+                                                class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
+                                            </button>
+                                        </form>
+
                                     </div>
                                 </td>
                             </tr>
@@ -101,12 +128,18 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
+                                <button onclick="window.location.href='{{ route('user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
                                     <i data-lucide="edit" class="h-5 w-5"></i>
                                 </button>
-                                <button class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
-                                    <i data-lucide="trash-2" class="h-5 w-5"></i>
-                                </button>
+                                <form action="{{ route('user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                        class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
+                                        <i data-lucide="trash-2" 
+                                        class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -140,7 +173,6 @@
                 <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
                     <!-- Mobile Page Info -->
                     <div class="sm:hidden text-sm text-gray-600 dark:text-gray-400 font-medium">
-                        Halaman 25 dari 50
                         Menampilkan {{ $currentPage }} dari {{ $total }}
                     </div>
 
@@ -181,10 +213,10 @@
             <!-- Mobile Quick Navigation -->
             <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex justify-center space-x-2">
-                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg font-medium transition-all duration-200 active:scale-95">
+                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg font-medium transition-all duration-200 active:scale-95" @disabled($isFirstPage) onclick="window.location.href='{{ $firstPage }}'">
                         Go to First
                     </button>
-                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-all duration-200 active:scale-95">
+                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-all duration-200 active:scale-95" @disabled($isLastPage) onclick="window.location.href='{{ $lastPage }}'">
                         Go to Last
                     </button>
                 </div>

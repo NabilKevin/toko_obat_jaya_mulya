@@ -4,15 +4,15 @@
 
 @keyframes alertFadeIn {
     0% {
-        transform: translateY(-280%);
+        top: -100%;
     }
     20% {
-        transform: translateY(0);
+        top: 12%;
     }
     80% {
-        transform: translateY(0);
+        top: 12%;
     }
     100% {
-        transform: translateY(-280%);
+        top: -100%;
     }
 }
