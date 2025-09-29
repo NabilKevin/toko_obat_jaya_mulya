@@ -41,7 +41,7 @@
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Penjualan Hari Ini</p>
                     <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">Rp {{ $penjualanHariIni }}</p>
-                    <p class="text-xs text-{{ $totalKenaikanPenjualan > 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
+                    <p class="text-xs text-{{ $totalKenaikanPenjualan >= 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
                         @if($totalKenaikanPenjualan > 0)
                             <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
                             <span class="truncate">+{{ $totalKenaikanPenjualan }}% dari kemarin</span>
@@ -118,7 +118,7 @@
                 <span class="text-xs sm:text-sm text-muted-foreground bg-slate-200/50 dark:bg-slate-700/50 px-2 py-1 rounded-full">{{ $totalStokObat }} total</span>
             </div>
             <div class="space-y-3 sm:space-y-4">
-                @php 
+                @php
                     $colors = ['green', 'blue', 'purple', 'yellow'];
                 @endphp
                 @foreach ($overviewObats as $i => $d)

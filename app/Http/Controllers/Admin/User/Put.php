@@ -8,7 +8,7 @@ use App\Models\User;
 
 class Put extends Controller
 {
-    public function update(UserUpdateRequest $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         $data = $request->validated();
         $user = User::find($id);
@@ -33,5 +33,5 @@ class Put extends Controller
         $user->update($filtered);
 
         return redirect()->route('user.index')->with('success', 'User berhasil diedit!');
-    }       
+    }
 }

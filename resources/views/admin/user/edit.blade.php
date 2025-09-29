@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordConfirmation.focus();
         } else {
         }
-        
+
         if(password.value == '') {
 
             document.querySelector('button[type=submit]').addEventListener('click', function() {
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         }
     });
-    
+
 });
 
 </script>
