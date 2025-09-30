@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Obat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Obat\StoreRequest;
+use App\Http\Requests\Admin\Obat\StoreRequest;
 use App\Models\Obat;
 
 class Post extends Controller

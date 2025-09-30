@@ -42,14 +42,19 @@ class Get extends Controller
             return ['nama' => $obat->nama, 'stok' => $obat->stok];
         })->sortBy('stok', SORT_NATURAL, true)->take(4);
 
-        $transaksi = TransactionItem::with(['obat'])->get()->sortBy('created_at', SORT_NATURAL, true)->take(3);
+        $transaksis = TransactionItem::select('transactionitem.*')
+            ->join('transaction', 'transactionitem.transaction_id', '=', 'transaction.id')
+            ->orderBy('transaction.created_at', 'desc')
+            ->with(['obat', 'transaction']);
 
-        $penjualanHariIni = TransactionItem::whereDate('created_at', Carbon::today())->sum('subtotal');
-        $penjualanKemarin = TransactionItem::whereDate('created_at', Carbon::yesterday())->sum('subtotal');
+        $transaksi = (clone $transaksis)->take(3)->get();
+
+        $penjualanHariIni = (clone $transaksis)->whereDate('created_at', Carbon::today())->sum('subtotal');
+        $penjualanKemarin = (clone $transaksis)->whereDate('created_at', Carbon::yesterday())->sum('subtotal');
 
         $totalKenaikanPenjualan = ceil(($penjualanHariIni - $penjualanKemarin) / ($penjualanKemarin > 0 ? $penjualanKemarin : 1) * 100);
 
-        $chartPenjualan = TransactionItem::select(
+        $chartPenjualan = (clone $transaksis)->select(
             DB::raw('DATE(created_at) as tanggal'),
             DB::raw('SUM(subtotal) as total')
         )
@@ -66,13 +71,18 @@ class Get extends Controller
             'totalObat' => $totalObat,
             'totalStokMenipis'=> $totalStokMenipis,
             'totalUser'=> $totalUser,
+
             'totalKenaikanObat' => $totalKenaikanObat,
             'totalKenaikanUser' => $totalKenaikanUser < 0 ? 0: $totalKenaikanUser,
+
             'overviewObats' => $listStokObats,
             'totalStokObat' => $totalStokObat,
+
             'transaksis' => $transaksi,
+
             'penjualanHariIni' => $penjualanHariIni,
             'totalKenaikanPenjualan' => $totalKenaikanPenjualan,
+
             'chartLabels' => $chartLabels,
             'chartTotals' => $chartTotals
         ]);

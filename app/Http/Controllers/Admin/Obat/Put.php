@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Obat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Obat\UpdateRequest;
+use App\Http\Requests\Admin\Obat\UpdateRequest;
 use App\Models\Obat;
 
 class Put extends Controller

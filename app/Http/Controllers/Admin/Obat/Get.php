@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Obat;
 
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
+use App\Models\TipeObat;
 use Illuminate\Http\Request;
 
 class Get extends Controller
@@ -33,7 +34,8 @@ class Get extends Controller
     }
     public function create()
     {
-        return view('admin.obat.create');
+        $tipeobat = TipeObat::all();
+        return view('admin.obat.create', ['tipeobat' => $tipeobat]);
     }
     public function edit($id)
     {
@@ -42,6 +44,9 @@ class Get extends Controller
         if (!$obat) {
             return redirect()->back()->with("error","Obat tidak ditemukan!");
         }
-        return view('admin.obat.edit', ['obat'=> $obat]);
+
+        $tipeobat = TipeObat::all();
+        
+        return view('admin.obat.edit', ['obat'=> $obat, 'tipeobat' => $tipeobat]);
     }
 }

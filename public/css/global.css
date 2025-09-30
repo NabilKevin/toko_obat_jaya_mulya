@@ -17,6 +17,12 @@
     }
 }
 
+.dark .alert {
+    background-color: rgb(21 128 61 / 0.5) !important;
+}
+.light .alert {
+    background-color: rgb(187 247 208 / 0.5) !important;
+}
 
 :root {
     /* Light theme colors */

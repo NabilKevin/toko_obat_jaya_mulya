@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\Admin\User\StoreRequest;
 use App\Models\User;
 
 class Post extends Controller
 {
-    public function store(UserStoreRequest $request)
+    public function store(StoreRequest $request)
     {
         $data = $request->validated();
 

@@ -173,7 +173,7 @@
                                     <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp {{ $transaksi->subtotal }}</span>
                                 </td>
                                 <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
-                                    <span class="text-sm text-muted-foreground">{{ timeAgo($transaksi->created_at) }}</span>
+                                    <span class="text-sm text-muted-foreground">{{ timeAgo($transaksi->transaction->created_at) }}</span>
                                 </td>
                             </tr>
                         @endforeach

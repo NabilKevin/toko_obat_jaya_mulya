@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Obat;
+namespace App\Http\Requests\Admin\Obat;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +12,7 @@ class UpdateRequest extends FormRequest
       'kode_barcode' => 'string|size:12',
       'nama' => 'max:255',
       'stok' => 'integer',
-      'tipe' => 'in:bebas,bebas terbatas,keras,narkotika,psikotropika',
+      'tipe_id' => 'exists:tipeobat,id',
       'harga_modal' => 'integer',
       'harga_jual' => 'integer',
     ];

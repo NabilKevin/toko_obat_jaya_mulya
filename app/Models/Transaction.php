@@ -8,4 +8,5 @@ class Transaction extends Model
 {
     protected $guarded = ['id'];
     protected $table = 'transaction';
+    public $timestamps = false;
 }

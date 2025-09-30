@@ -8,6 +8,7 @@ class TipeObat extends Model
 {
     protected $guarded = ['id'];
     protected $table = "tipeobat";
+    public $timestamps = false;
 
     public function obats() 
     {

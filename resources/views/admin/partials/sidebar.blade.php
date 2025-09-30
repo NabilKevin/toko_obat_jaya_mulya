@@ -41,11 +41,14 @@
     </nav>
 
     <div class="absolute bottom-4 left-4 right-4">
-        <button class="group flex items-center w-full px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 hover:shadow-md transition-all duration-200 transform hover:scale-105">
-            <div class="flex items-center justify-center w-8 h-8 rounded-lg group-hover:bg-destructive/20 transition-all duration-200">
-                <i data-lucide="log-out" class="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"></i>
-            </div>
-            <span class="ml-3 sidebar-label transition-all duration-200">Logout</span>
-        </button>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="group flex items-center w-full px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 hover:shadow-md transition-all duration-200 transform hover:scale-105">
+                <div class="flex items-center justify-center w-8 h-8 rounded-lg group-hover:bg-destructive/20 transition-all duration-200">
+                    <i data-lucide="log-out" class="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"></i>
+                </div>
+                <span class="ml-3 sidebar-label transition-all duration-200">Logout</span>
+            </button>
+        </form>
     </div>
 </div>
