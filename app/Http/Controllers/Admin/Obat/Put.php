@@ -15,12 +15,19 @@ class Put extends Controller
         if (!$obat) {
             return redirect()->back()->with("error","Obat tidak ditemukan!");
         }
+        if($data->kode_barcode != $obat->barcode) {
+            $rule = [
+                'kode_barcode' => 'unique:obat,kode_barcode'
+            ];
+            $data = $request->validate($rule);
+        }
+            
         $filtered = array_filter($data, function ($value) {
             return !is_null($value) && $value !== '';
         });
 
         $obat->update($filtered);
 
-        return redirect()->route('obat.index')->with('success', 'Obat berhasil diedit!');
+        return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil diedit!');
     }       
 }

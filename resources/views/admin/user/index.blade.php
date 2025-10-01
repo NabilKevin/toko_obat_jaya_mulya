@@ -18,9 +18,8 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Data User</h1>
             <p class="text-sm sm:text-base text-muted-foreground">Kelola data pengguna sistem</p>
         </div>
-        <button onclick="window.location.href='{{ route('user.create') }}'" id="createUser"
-                class="group relative bg-green-500 hover:bg-green-500/90 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl ring-1 ring-success/20 transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+        <button onclick="window.location.href='{{ route('admin.user.create') }}'" id="createUser"
+                class="group relative bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl ring-1 ring-success/20 transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
             <span class="relative z-10">Tambah User</span>
         </button>
     </div>
@@ -29,7 +28,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <!-- CHANGE> Added search button next to search input -->
-            <form class="flex space-x-3" action="{{ route('user.index') }}">
+            <form class="flex space-x-3" action="{{ route('admin.user.index') }}">
                 <div class="relative flex-1">
                     <input type="text" 
                             name="search"
@@ -54,6 +53,9 @@
         <div class="overflow-x-auto">
             <!-- Desktop Table View -->
             <div class="hidden lg:block">
+            @if (count($users) === 0)
+                <h1 class="my-4 font-medium text-2xl text-foreground text-center">Tidak ada data user!</h1>
+            @endif
                 <table class="w-full">
                     <thead class="bg-gray-50 dark:bg-gray-900/50">
                         <tr>
@@ -86,22 +88,24 @@
                                 </td>
                                 <td class="py-4 px-6">
                                     <div class="flex space-x-2">
-                                        <button onclick="window.location.href='{{ route('user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform hover:scale-110">
+                                        <button onclick="window.location.href='{{ route('admin.user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform hover:scale-110">
                                             <i data-lucide="edit" class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
                                         </button>
-                                        <form action="{{ route('user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                class="group inline-flex items-center justify-center w-9 h-9 rounded-lg 
-                                                    bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 
-                                                    dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 
-                                                    dark:hover:to-red-900/50 text-red-600 dark:text-red-400 
-                                                    transition-all duration-200 hover:shadow-md transform hover:scale-110">
-                                                <i data-lucide="trash-2" 
-                                                class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
-                                            </button>
-                                        </form>
+                                        @if ($user->id !== auth()->id())
+                                            <form action="{{ route('admin.user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                    class="group inline-flex items-center justify-center w-9 h-9 rounded-lg 
+                                                        bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 
+                                                        dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 
+                                                        dark:hover:to-red-900/50 text-red-600 dark:text-red-400 
+                                                        transition-all duration-200 hover:shadow-md transform hover:scale-110">
+                                                    <i data-lucide="trash-2" 
+                                                    class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
+                                                </button>
+                                            </form>
+                                        @endif
 
                                     </div>
                                 </td>
@@ -125,18 +129,20 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button onclick="window.location.href='{{ route('user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
+                                <button onclick="window.location.href='{{ route('admin.user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
                                     <i data-lucide="edit" class="h-5 w-5"></i>
-                                </button>
-                                <form action="{{ route('user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                        class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
-                                        <i data-lucide="trash-2" 
-                                        class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
-                                    </button>
-                                </form>
+                                </button>   
+                                @if ($user->id !== auth()->id())
+                                    <form action="{{ route('admin.user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
+                                            <i data-lucide="trash-2" 
+                                            class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
 
@@ -238,14 +244,6 @@
             eyeOffIcon.classList.add('hidden');
         }
     }
-
-    document.getElementById('createUser').addEventListener('click', function() {
-        setTimeout(() => {
-            this.disabled = true;
-            this.style.opacity = '0.5';
-            this.style.cursor = 'not-allowed';
-        }, 1)
-    });
 </script>
 
 @endsection

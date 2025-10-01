@@ -32,6 +32,6 @@ class Put extends Controller
 
         $user->update($filtered);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil diedit!');
+        return redirect()->route('admin.user.index')->with('success', 'User berhasil diedit!');
     }
 }

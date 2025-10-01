@@ -142,6 +142,9 @@
         </div>
         <div class="overflow-x-auto -mx-4 sm:mx-0">
             <div class="inline-block min-w-full align-middle">
+            @if (count($transaksis) === 0)
+                <h1 class="my-4 font-medium text-2xl text-foreground text-center">Tidak ada data transaksi!</h1>
+            @else
                 <table class="min-w-full">
                     <thead>
                         <tr class="border-b border-slate-200 dark:border-slate-700">
@@ -179,6 +182,7 @@
                         @endforeach
                     </tbody>
                 </table>
+            @endif
             </div>
         </div>
     </div>

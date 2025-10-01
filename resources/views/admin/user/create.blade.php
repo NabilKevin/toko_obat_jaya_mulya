@@ -9,7 +9,7 @@
          {{-- Enhanced header with better visual hierarchy --}}
         <div class="mb-8">
             <div class="flex items-center space-x-4 mb-6">
-                <a href="{{ route('user.index') }}" 
+                <a href="{{ route('admin.user.index') }}" 
                    class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl shadow-soft hover:shadow-medium text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95">
                     <i data-lucide="arrow-left" class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
                 </a>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="p-8">
-                <form action="{{ route('user.store') }}" method="POST">
+                <form action="{{ route('admin.user.store') }}" method="POST">
                     @csrf
                     
                      {{-- Enhanced personal information section --}}
@@ -175,11 +175,11 @@
                      {{-- Enhanced action buttons --}}
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-8 border-t border-border">
                         <button type="submit" 
-                                class="group flex-1 bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl shadow-medium hover:shadow-large ring-1 ring-primary/20 transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98]">
+                                class="group flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-2xl shadow-medium hover:shadow-large ring-1 ring-primary/20 transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98]">
                             <span class="relative z-10">Buat User Baru</span>
                         </button>
                         
-                        <a href="{{ route('user.index') }}" 
+                        <a href="{{ route('admin.user.index') }}" 
                            class="group flex-1 bg-muted hover:bg-muted/80 border-2 border-border text-foreground px-8 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98] shadow-soft hover:shadow-medium">
                             <span>Batal</span>
                         </a>

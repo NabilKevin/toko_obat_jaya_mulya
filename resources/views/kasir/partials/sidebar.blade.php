@@ -11,9 +11,11 @@
     <nav class="px-4 space-y-2">
         @php
             $menuItems = [
-                ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'admin.dashboard'],
-                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'admin.obat.index'],
-                ['icon' => 'users', 'label' => 'Data User', 'route' => 'admin.user.index'],
+                ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'kasir.dashboard'],
+                ['icon' => 'package', 'label' => 'POS', 'route' => 'kasir.pos'],
+                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'kasir.dashboard'],
+                ['icon' => 'users', 'label' => 'Riwayat Transaksi', 'route' => 'kasir.dashboard'],
+                ['icon' => 'users', 'label' => 'Laporan', 'route' => 'kasir.dashboard'],
             ];
         @endphp
 

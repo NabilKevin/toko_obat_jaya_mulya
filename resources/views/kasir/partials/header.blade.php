@@ -24,8 +24,9 @@
                         <i data-lucide="user" class="h-4 w-4 text-primary-foreground"></i>
                     </div>
                     <div class="hidden sm:block text-left">
-                        <span class="text-sm font-medium text-foreground">{{ auth()->user()->username }}</span>
-                        <p class="text-xs text-muted-foreground">Administrator</p>
+                        {{-- <span class="text-sm font-medium text-foreground">{{ auth()->user()->username }}</span> --}}
+                        <span class="text-sm font-medium text-foreground">Kasir</span>
+                        <p class="text-xs text-muted-foreground">Kasir</p>
                     </div>
                 </div>
             </div>

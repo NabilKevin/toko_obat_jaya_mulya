@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="id" class="h-full">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>@yield('title', 'Kasir - Toko Obat')</title>
     <title>@yield('title', 'Dashboard Admin - Toko Obat Jaya Mulya')</title>
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
     
@@ -55,25 +55,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="{{ asset('js/global.js') }}"></script>
-</head>
-<body class="min-h-screen bg-background text-foreground font-sans antialiased">
-    <div class="flex relative h-screen overflow-hidden">
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
-        
-        @include('admin.partials.sidebar')
-        
-        <div class="flex-1 min-w-0 flex flex-col">
-            @include('admin.partials.header')
-            
-            <main class="flex-1 overflow-auto bg-background">
-                @yield('content')
-            </main>
-        </div>
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          if (stored === 'dark') document.documentElement.classList.add('dark');
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body class="h-full bg-background text-foreground font-sans">
+    <div class="min-h-screen flex">
+      @include('kasir.partials.sidebar')
+      <div class="flex-1 flex flex-col min-w-0">
+        @include('kasir.partials.header')
+        <main class="p-4 md:p-6 lg:p-8">
+          @yield('content')
+        </main>
+      </div>
     </div>
-
-
-
+    <script src="{{ asset('js/global.js') }}"></script>
     @stack('scripts')
-</body>
+  </body>
 </html>

@@ -20,6 +20,18 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        User::create([
+            'nama' => 'admin',
+            'username' => 'admin',
+            'role' => 'admin',
+            'password' => bcrypt('admin123'),
+        ]);
+        User::create([
+            'nama' => 'kasir',
+            'username' => 'kasir',
+            'role' => 'kasir',
+            'password' => bcrypt('kasir123'),
+        ]);
 
         $dataTipeObat = ['bebas','bebas terbatas','keras','narkotika','psikotropika'];
 

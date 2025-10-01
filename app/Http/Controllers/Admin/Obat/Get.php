@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Obat;
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
 use App\Models\TipeObat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class Get extends Controller
@@ -44,6 +45,8 @@ class Get extends Controller
         if (!$obat) {
             return redirect()->back()->with("error","Obat tidak ditemukan!");
         }
+
+        $obat->expired_at = Carbon::parse($obat->expired_at)->format("Y-m-d");
 
         $tipeobat = TipeObat::all();
         

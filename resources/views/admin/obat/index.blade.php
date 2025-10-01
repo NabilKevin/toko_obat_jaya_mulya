@@ -18,9 +18,8 @@
             <p class="text-sm sm:text-base text-muted-foreground">Kelola inventory obat di toko</p>
         </div>
         <!-- Mobile-friendly button with better touch target -->
-        <button onclick="window.location.href='{{ route('obat.create') }}'" id="createObat"  
-                class="group relative bg-green-500 hover:bg-green-500/90 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl ring-1 ring-success/20 transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
-            <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+        <button onclick="window.location.href='{{ route('admin.obat.create') }}'" id="createObat"  
+                class="group relative bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl ring-1 ring-success/20 transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
             <span class="relative z-10">Tambah Obat</span>
         </button>
     </div>
@@ -28,7 +27,7 @@
     <div class="bg-muted rounded-lg border border-border">
 <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <!-- CHANGE> Added search button next to search input -->
-            <form class="flex space-x-3" action="{{ route('obat.index') }}">
+            <form class="flex space-x-3" action="{{ route('admin.obat.index') }}">
                 <div class="relative flex-1">
                     <input type="text" 
                             name="search"
@@ -51,6 +50,9 @@
         
         <div class="p-3 sm:p-6">
             <!-- Mobile-responsive grid layout -->
+            @if (count($obats) === 0)
+                <h1 class="font-medium text-2xl text-foreground text-center">Tidak ada data obat!</h1>
+            @endif
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 @foreach($obats as $obat)
                     @php
@@ -74,10 +76,10 @@
                                 </div>
                                 <!-- Mobile-friendly action buttons with better spacing -->
                                 <div class="flex space-x-2 flex-shrink-0">
-                                    <button onclick="window.location.href='{{ route('obat.edit', $obat->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
+                                    <button onclick="window.location.href='{{ route('admin.obat.edit', $obat->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
                                         <i data-lucide="edit" class="h-5 w-5"></i>
                                     </button>
-                                    <form action="{{ route('obat.delete', $obat->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus obat tersebut?')">
+                                    <form action="{{ route('admin.obat.delete', $obat->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus obat tersebut?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
@@ -249,13 +251,4 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('createObat').addEventListener('click', function() {
-        setTimeout(() => {
-            this.disabled = true;
-            this.style.opacity = '0.5';
-            this.style.cursor = 'not-allowed';
-        }, 1)
-    });
-</script>
 @endsection

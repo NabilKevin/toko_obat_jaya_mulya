@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah User - Toko Obat Jaya Mulya')
-@section('page-title', 'Tambah User')
+@section('title', 'Edit Obat - Toko Obat Jaya Mulya')
+@section('page-title', 'Edit Obat')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-background via-secondary to-muted">
@@ -9,13 +9,13 @@
          {{-- Enhanced header with better visual hierarchy --}}
         <div class="mb-8">
             <div class="flex items-center space-x-4 mb-6">
-                <a href="{{ route('user.index') }}" 
+                <a href="{{ route('admin.obat.index') }}" 
                    class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl shadow-soft hover:shadow-medium text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95">
                     <i data-lucide="arrow-left" class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
                 </a>
                 <div>
-                    <h1 class="text-3xl lg:text-4xl font-bold text-foreground mb-2">Tambah Obat Baru</h1>
-                    <p class="text-muted-foreground text-lg">Buat obat baru</p>
+                    <h1 class="text-3xl lg:text-4xl font-bold text-foreground mb-2">Edit Obat</h1>
+                    <p class="text-muted-foreground text-lg">Edit obat {{ $obat->nama }}</p>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="p-8">
-                <form action="{{ route('obat.update', $obat->id) }}" method="POST">
+                <form action="{{ route('admin.obat.update', $obat->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                      {{-- Enhanced personal information section --}}
@@ -46,12 +46,31 @@
                             <div class="lg:col-span-2">
                                 <div class="relative group">
                                     <input type="text" 
+                                           id="kode_barcode" 
+                                           name="kode_barcode" 
+                                           required
+                                           value="{{ old('kode_barcode', $obat->kode_barcode) }}"
+                                           class="{{ $errors->has('kode_barcode') ? 'border-red-500' : 'border-gray-500' }} peer w-full px-4 pt-6 pb-2 bg-muted border-2 border-border rounded-2xl text-foreground placeholder-transparent focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 text-base min-h-[64px] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 focus:shadow-xl focus:shadow-primary/10"
+                                           placeholder="Masukkan Kode Barcode">
+                                    <label for="kode_barcode" 
+                                           class="absolute left-4 top-2 text-xs font-medium text-muted-foreground transition-all duration-200 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
+                                        Kode Barcode
+                                    </label>
+                                    @error('kode_barcode')
+                                        <p class="text-red-500 text-xs font-medium italic mt-2 mb-0">{{ $message }}</p>
+                                    @enderror
+                                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 opacity-0 peer-focus:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="relative group">
+                                    <input type="text" 
                                            id="nama" 
                                            name="nama" 
                                            required
                                            value="{{ old('nama', $obat->nama) }}"
                                            class="{{ $errors->has('nama') ? 'border-red-500' : 'border-gray-500' }} peer w-full px-4 pt-6 pb-2 bg-muted border-2 border-border rounded-2xl text-foreground placeholder-transparent focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 text-base min-h-[64px] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 focus:shadow-xl focus:shadow-primary/10"
-                                           placeholder="Masukkan nama pengguna">
+                                           placeholder="Masukkan nama">
                                     <label for="nama" 
                                            class="absolute left-4 top-2 text-xs font-medium text-muted-foreground transition-all duration-200 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
                                         Nama
@@ -179,11 +198,11 @@
                      {{-- Enhanced action buttons --}}
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-8 border-t border-border">
                         <button type="submit" 
-                                class="group flex-1 bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl shadow-medium hover:shadow-large ring-1 ring-primary/20 transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98]">
-                            <span class="relative z-10">Buat Obat Baru</span>
+                                class="group flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-2xl shadow-medium hover:shadow-large ring-1 ring-primary/20 transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98]">
+                            <span class="relative z-10">Edit Obat</span>
                         </button>
                         
-                        <a href="{{ route('user.index') }}" 
+                        <a href="{{ route('admin.obat.index') }}" 
                            class="group flex-1 bg-muted hover:bg-muted/80 border-2 border-border text-foreground px-8 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98] shadow-soft hover:shadow-medium">
                             <span>Batal</span>
                         </a>
