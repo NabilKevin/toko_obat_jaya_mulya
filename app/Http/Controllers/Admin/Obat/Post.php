@@ -11,9 +11,9 @@ class Post extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        
+
         Obat::create($data);
-        
+
         return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil ditambahkan!');
     }
 

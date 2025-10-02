@@ -9,7 +9,7 @@ class UpdateRequest extends FormRequest
   public function rules()
   {
     return [
-      'kode_barcode' => 'string|size:12',
+      'kode_barcode' => 'string|size:13',
       'nama' => 'max:255',
       'stok' => 'integer',
       'tipe_id' => 'exists:tipeobat,id',

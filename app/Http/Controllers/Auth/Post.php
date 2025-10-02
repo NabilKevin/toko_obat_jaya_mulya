@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Login;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\Login\StoreRequest;
+use App\Http\Requests\Auth\StoreRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -12,7 +12,7 @@ class Post extends Controller
   public function login(StoreRequest $request)
   {
     $credential = $request->validated();
-    
+
     if(!Auth::attempt($credential)) {
       return redirect()->back()->with("error","Username atau password salah!");
     }
@@ -26,7 +26,7 @@ class Post extends Controller
 
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    
+
     return redirect('/login');
   }
 }

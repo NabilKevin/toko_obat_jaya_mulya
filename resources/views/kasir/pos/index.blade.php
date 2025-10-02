@@ -16,13 +16,16 @@
       <div class="mt-4 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden">
         <div class="px-4 py-2 text-sm font-medium">Katalog</div>
         <div class="divide-y divide-neutral-100 dark:divide-neutral-800 max-h-80 overflow-auto">
-          <div class="flex items-center justify-between px-4 py-2">
-            <div>
-              <div class="font-medium">Contoh Obat</div>
-              <div class="text-xs text-neutral-500">Stok: 0</div>
-            </div>
-            <button class="text-sm px-3 py-1.5 rounded-md border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800">Tambah</button>
-          </div>
+            @foreach ($obats as $obat)
+                <div class="flex items-center justify-between px-4 pb-3 py-4 my-4">
+                    <div>
+                        <div class="font-medium">{{ $obat['nama'] }}</div>
+                        <div class="font-medium mb-2">{{ formatRupiah($obat['harga']) }}</div>
+                        <div class="text-xs text-neutral-500">Stok: {{ $obat['stok'] }}</div>
+                    </div>
+                    <button class="text-sm px-3 py-1.5 rounded-md border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800">Tambah</button>
+                </div>
+            @endforeach
         </div>
       </div>
     </section>

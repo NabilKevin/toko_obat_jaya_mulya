@@ -30,7 +30,7 @@
             <!-- CHANGE> Added search button next to search input -->
             <form class="flex space-x-3" action="{{ route('admin.user.index') }}">
                 <div class="relative flex-1">
-                    <input type="text" 
+                    <input type="text"
                             name="search"
                             value="{{ $search }}"
                             id="search"
@@ -95,13 +95,13 @@
                                             <form action="{{ route('admin.user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
-                                                    class="group inline-flex items-center justify-center w-9 h-9 rounded-lg 
-                                                        bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 
-                                                        dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 
-                                                        dark:hover:to-red-900/50 text-red-600 dark:text-red-400 
+                                                <button type="submit"
+                                                    class="group inline-flex items-center justify-center w-9 h-9 rounded-lg
+                                                        bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200
+                                                        dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30
+                                                        dark:hover:to-red-900/50 text-red-600 dark:text-red-400
                                                         transition-all duration-200 hover:shadow-md transform hover:scale-110">
-                                                    <i data-lucide="trash-2" 
+                                                    <i data-lucide="trash-2"
                                                     class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
                                                 </button>
                                             </form>
@@ -131,14 +131,14 @@
                             <div class="flex space-x-2">
                                 <button onclick="window.location.href='{{ route('admin.user.edit', $user->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
                                     <i data-lucide="edit" class="h-5 w-5"></i>
-                                </button>   
+                                </button>
                                 @if ($user->id !== auth()->id())
                                     <form action="{{ route('admin.user.delete', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus user tersebut?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" 
+                                        <button type="submit"
                                             class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
-                                            <i data-lucide="trash-2" 
+                                            <i data-lucide="trash-2"
                                             class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
                                         </button>
                                     </form>

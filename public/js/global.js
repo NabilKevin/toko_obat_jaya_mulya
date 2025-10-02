@@ -19,10 +19,10 @@ function initTheme() {
     try {
         const savedTheme = localStorage.getItem('theme') || 'light';
         console.log("[v0] Loading saved theme:", savedTheme);
-        
+
         document.documentElement.className = savedTheme;
         updateThemeIcon();
-        
+
         console.log("[v0] Theme initialized successfully");
     } catch (error) {
         console.error("[v0] Error initializing theme:", error);
@@ -35,13 +35,13 @@ function toggleTheme() {
     try {
         const currentTheme = document.documentElement.className;
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
+
         console.log("[v0] Switching theme from", currentTheme, "to", newTheme);
-        
+
         document.documentElement.className = newTheme;
         localStorage.setItem('theme', newTheme);
         updateThemeIcon();
-        
+
         // Add visual feedback
         const button = document.querySelector('[onclick="toggleTheme()"]');
         if (button) {
@@ -50,7 +50,7 @@ function toggleTheme() {
                 button.style.transform = '';
             }, 150);
         }
-        
+
         console.log("[v0] Theme switched successfully to", newTheme);
     } catch (error) {
         console.error("[v0] Error toggling theme:", error);
@@ -61,7 +61,7 @@ function updateThemeIcon() {
     try {
         const themeIcon = document.getElementById('theme-icon');
         const isDark = document.documentElement.className === 'dark';
-        
+
         if (themeIcon) {
             themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
             initIcons(); // Re-initialize icons
@@ -88,7 +88,7 @@ window.addEventListener('load', function() {
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
+
     if (window.innerWidth < 1024) { // Mobile/tablet
         sidebar.classList.toggle('-translate-x-full');
         overlay.classList.toggle('hidden');
@@ -96,11 +96,11 @@ function toggleSidebar() {
     } else { // Desktop
         sidebar.classList.toggle('w-64');
         sidebar.classList.toggle('w-16');
-        
+
         // Toggle text visibility
         const sidebarTexts = sidebar.querySelectorAll('.sidebar-text');
         const sidebarLabels = sidebar.querySelectorAll('.sidebar-label');
-        
+
         sidebarTexts.forEach(text => text.classList.toggle('hidden'));
         sidebarLabels.forEach(label => label.classList.toggle('hidden'));
     }
@@ -110,7 +110,7 @@ function toggleSidebar() {
 window.addEventListener('resize', function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
+
     if (window.innerWidth >= 1024) {
         sidebar.classList.remove('-translate-x-full');
         overlay.classList.add('hidden');
@@ -129,8 +129,14 @@ function closeModal(modalId) {
     document.body.classList.remove('overflow-hidden');
 }
 
-function formatInputNumber(e) {
-    let value = this.value.replace(/\D/g, ""); 
-    let number = Number(value); // konversi string -> number
-    this.value = new Intl.NumberFormat('id-ID').format(number);
+function formatInputNumber(e, hargaRaw) {
+    let raw = e.target.value.replace(/\D/g, "");
+    if(raw === "") {
+        e.target.value = "";
+        hargaRaw.value = "";
+        return;
+    }
+    let number = parseInt(raw, 10);
+    e.target.value = new Intl.NumberFormat('id-ID').format(number);
+    hargaRaw.value = number; // 👉 yang dikirim ke server angka murni
 }
