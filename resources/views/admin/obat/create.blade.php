@@ -9,7 +9,7 @@
          {{-- Enhanced header with better visual hierarchy --}}
         <div class="mb-8">
             <div class="flex items-center space-x-4 mb-6">
-                <a href="{{ route('admin.obat.index') }}"
+                <a href="{{ route('admin.obat') }}"
                    class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl shadow-soft hover:shadow-medium text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95">
                     <i data-lucide="arrow-left" class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
                 </a>
@@ -39,7 +39,7 @@
                      {{-- Enhanced personal information section --}}
                     <div class="space-y-6">
                         <div class="flex items-center space-x-3 pb-4 border-b border-border">
-                            <h3 class="text-lg font-semibold text-foreground">Informasi Personal</h3>
+                            <h3 class="text-lg font-semibold text-foreground">Informasi Obat</h3>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -215,7 +215,7 @@
                             <span class="relative z-10">Buat Obat Baru</span>
                         </button>
 
-                        <a href="{{ route('admin.obat.index') }}"
+                        <a href="{{ route('admin.obat') }}"
                            class="group flex-1 bg-muted hover:bg-muted/80 border-2 border-border text-foreground px-8 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center font-semibold text-base transform hover:scale-[1.02] hover:-translate-y-0.5 min-h-[56px] active:scale-[0.98] shadow-soft hover:shadow-medium">
                             <span>Batal</span>
                         </a>
@@ -295,33 +295,7 @@
 </div>
 
  {{-- JavaScript for password toggle functionality --}}
-<script>
-const form = document.querySelector('form');
-
-document.querySelector('button[type=submit]').addEventListener('click', function() {
-    let allInputFilled = true
-    const inputs = form.querySelectorAll("input, select"); // ambil semua input
-    inputs.forEach(input => {
-        if (input.type !== 'hidden' && !input.value.trim()) {
-            allInputFilled = false
-        }
-    });
-    if(allInputFilled) {
-        setTimeout(() => {
-            this.disabled = true;
-            this.style.opacity = '0.5';
-            this.style.cursor = 'not-allowed';
-        }, 1)
-    }
-
-})
-
-const hidden_modal = document.getElementById('harga_modal_hidden');
-const hidden_jual = document.getElementById('harga_jual_hidden');
-
-document.getElementById('harga_modal').addEventListener('input', e => formatInputNumber(e, hidden_modal));
-document.getElementById('harga_jual').addEventListener('input', e => formatInputNumber(e, hidden_jual));
-</script>
+<script src="{{ asset('js/admin/obat/form.js') }}"></script>
 
 <script src="{{ asset('js/cam.js') }}"></script>
 

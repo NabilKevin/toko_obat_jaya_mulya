@@ -15,6 +15,6 @@ class Post extends Controller
         $data['password'] = bcrypt($data['password']);
         User::create($data);
 
-        return redirect()->route('admin.user.index')->with('success', 'User berhasil ditambahkan!');
-    }       
+        return redirect()->route('admin.user')->with('success', 'User berhasil ditambahkan!');
+    }
 }

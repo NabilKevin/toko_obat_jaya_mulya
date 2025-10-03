@@ -14,7 +14,7 @@ class Post extends Controller
 
         Obat::create($data);
 
-        return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil ditambahkan!');
+        return redirect()->route('admin.obat')->with('success', 'Obat berhasil ditambahkan!');
     }
 
 }

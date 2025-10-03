@@ -21,13 +21,13 @@ class Put extends Controller
             ];
             $data = $request->validate($rule);
         }
-            
+
         $filtered = array_filter($data, function ($value) {
             return !is_null($value) && $value !== '';
         });
 
         $obat->update($filtered);
 
-        return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil diedit!');
-    }       
+        return redirect()->route('admin.obat')->with('success', 'Obat berhasil diedit!');
+    }
 }

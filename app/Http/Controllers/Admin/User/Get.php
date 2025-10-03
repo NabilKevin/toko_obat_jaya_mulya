@@ -18,7 +18,7 @@ class Get extends Controller
             'kasir' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
         ];
 
-        return view('admin.user.index',
+        return view('admin.user',
             [
                 'users' => $users,
                 'total' => $users->total(),
@@ -44,7 +44,7 @@ class Get extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        
+
         if (!$user) {
             return redirect()->back()->with("error","User tidak ditemukan!");
         }

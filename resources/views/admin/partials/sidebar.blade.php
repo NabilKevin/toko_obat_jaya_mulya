@@ -12,8 +12,8 @@
         @php
             $menuItems = [
                 ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'admin.dashboard'],
-                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'admin.obat.index'],
-                ['icon' => 'users', 'label' => 'Data User', 'route' => 'admin.user.index'],
+                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'admin.obat'],
+                ['icon' => 'users', 'label' => 'Data User', 'route' => 'admin.user'],
             ];
         @endphp
 

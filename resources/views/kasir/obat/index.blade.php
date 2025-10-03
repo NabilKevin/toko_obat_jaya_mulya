@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('kasir.layouts.app')
 
 @section('title', 'Data Obat - Toko Obat Jaya Mulya')
 @section('page-title', 'Data Obat')
@@ -17,17 +17,12 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Data Obat</h1>
             <p class="text-sm sm:text-base text-muted-foreground">Kelola inventory obat di toko</p>
         </div>
-        <!-- Mobile-friendly button with better touch target -->
-        <button onclick="window.location.href='{{ route('admin.obat.create') }}'" id="createObat"
-                class="group relative bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-2xl ring-1 ring-success/20 transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 w-full sm:w-auto min-h-[48px] active:scale-95">
-            <span class="relative z-10">Tambah Obat</span>
-        </button>
     </div>
 
     <div class="bg-muted rounded-lg border border-border">
 <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <!-- CHANGE> Added search button next to search input -->
-            <form class="flex space-x-3" action="{{ route('admin.obat') }}">
+            <form class="flex space-x-3" action="{{ route('kasir.obat') }}">
                 <div class="relative flex-1">
                     <input type="text"
                             name="search"
@@ -73,21 +68,6 @@
                                         <p class="text-sm text-slate-500 dark:text-slate-400">Barcode : {{ $obat['kode_barcode'] }}</p>
                                         <p class="text-sm text-slate-500 dark:text-slate-400">Tipe : {{ $obat['tipe'] }}</p>
                                     </div>
-                                </div>
-                                <!-- Mobile-friendly action buttons with better spacing -->
-                                <div class="flex space-x-2 flex-shrink-0">
-                                    <button onclick="window.location.href='{{ route('admin.obat.edit', $obat->id) }}'" class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 dark:hover:from-blue-900/30 dark:hover:to-blue-900/50 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
-                                        <i data-lucide="edit" class="h-5 w-5"></i>
-                                    </button>
-                                    <form action="{{ route('admin.obat.delete', $obat->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin hapus obat tersebut?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="group inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 dark:from-red-900/20 dark:to-red-900/30 dark:hover:from-red-900/30 dark:hover:to-red-900/50 text-red-600 dark:text-red-400 transition-all duration-200 hover:shadow-md transform active:scale-95">
-                                            <i data-lucide="trash-2"
-                                            class="h-4 w-4 transition-transform duration-200 group-hover:scale-110"></i>
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
 
@@ -176,7 +156,79 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Mobile Quick Navigation -->
+            <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-center space-x-2">
+                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg font-medium transition-all duration-200 active:scale-95">
+                        Go to First
+                    </button>
+                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-all duration-200 active:scale-95">
+                        Go to Last
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Mobile-optimized modal -->
+<div id="obatModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-background rounded-lg p-4 sm:p-6 w-full max-w-md border border-border max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg sm:text-xl font-semibold text-foreground">Tambah Obat</h2>
+            <button onclick="closeModal('obatModal')" class="text-muted-foreground hover:text-foreground p-2 -m-2 active:scale-95">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+        </div>
+
+        <form class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-foreground mb-1">Nama Obat</label>
+                <input type="text" class="w-full px-3 py-3 sm:py-2 bg-muted border border-border rounded-md text-foreground text-base sm:text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-foreground mb-1">Kategori</label>
+                <select class="w-full px-3 py-3 sm:py-2 bg-muted border border-border rounded-md text-foreground text-base sm:text-sm">
+                    <option>Analgesik</option>
+                    <option>Antibiotik</option>
+                    <option>Vitamin</option>
+                    <option>Antasida</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-foreground mb-1">Stok</label>
+                    <input type="number" class="w-full px-3 py-3 sm:py-2 bg-muted border border-border rounded-md text-foreground text-base sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-foreground mb-1">Harga</label>
+                    <input type="number" class="w-full px-3 py-3 sm:py-2 bg-muted border border-border rounded-md text-foreground text-base sm:text-sm">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-foreground mb-1">Tanggal Expired</label>
+                <input type="date" class="w-full px-3 py-3 sm:py-2 bg-muted border border-border rounded-md text-foreground text-base sm:text-sm">
+            </div>
+
+            <!-- Mobile-friendly button layout -->
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 pt-4">
+                <button type="submit" class="group flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 min-h-[48px]">
+                    <span class="flex items-center justify-center">
+                        <i data-lucide="check" class="h-4 w-4 mr-2 transition-transform duration-200 group-hover:scale-110"></i>
+                        Simpan
+                    </span>
+                </button>
+                <button type="button" onclick="closeModal('obatModal')"
+                        class="group flex-1 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 dark:from-gray-700 dark:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 min-h-[48px]">
+                    <span class="flex items-center justify-center">
+                        <i data-lucide="x" class="h-4 w-4 mr-2 transition-transform duration-200 group-hover:scale-110"></i>
+                        Batal
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection

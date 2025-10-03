@@ -28,7 +28,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <!-- CHANGE> Added search button next to search input -->
-            <form class="flex space-x-3" action="{{ route('admin.user.index') }}">
+            <form class="flex space-x-3" action="{{ route('admin.user') }}">
                 <div class="relative flex-1">
                     <input type="text"
                             name="search"
@@ -212,39 +212,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Mobile Quick Navigation -->
-            <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex justify-center space-x-2">
-                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 dark:from-blue-900/20 dark:to-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg font-medium transition-all duration-200 active:scale-95" @disabled($isFirstPage) onclick="window.location.href='{{ $firstPage }}'">
-                        Go to First
-                    </button>
-                    <button class="px-4 py-2 text-sm bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-all duration-200 active:scale-95" @disabled($isLastPage) onclick="window.location.href='{{ $lastPage }}'">
-                        Go to Last
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-
-<script>
-    function togglePassword() {
-        const passwordField = document.getElementById('passwordField');
-        const eyeIcon = document.getElementById('eyeIcon');
-        const eyeOffIcon = document.getElementById('eyeOffIcon');
-
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            eyeIcon.classList.add('hidden');
-            eyeOffIcon.classList.remove('hidden');
-        } else {
-            passwordField.type = 'password';
-            eyeIcon.classList.remove('hidden');
-            eyeOffIcon.classList.add('hidden');
-        }
-    }
-</script>
 
 @endsection
 

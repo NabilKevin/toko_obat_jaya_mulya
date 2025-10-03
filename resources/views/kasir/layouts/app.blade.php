@@ -6,7 +6,7 @@
     <title>@yield('title', 'Kasir - Toko Obat')</title>
     <title>@yield('title', 'Dashboard Admin - Toko Obat Jaya Mulya')</title>
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -49,7 +49,7 @@
             }
         }
     </script>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

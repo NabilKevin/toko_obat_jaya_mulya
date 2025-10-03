@@ -13,7 +13,7 @@
             $menuItems = [
                 ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'kasir.dashboard'],
                 ['icon' => 'package', 'label' => 'POS', 'route' => 'kasir.pos'],
-                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'kasir.dashboard'],
+                ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'kasir.obat'],
                 ['icon' => 'users', 'label' => 'Riwayat Transaksi', 'route' => 'kasir.dashboard'],
                 ['icon' => 'users', 'label' => 'Laporan', 'route' => 'kasir.dashboard'],
             ];
