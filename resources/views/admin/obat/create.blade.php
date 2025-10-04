@@ -57,7 +57,7 @@
                                         Kode Barcode
                                     </label>
                                     <button type="button"
-                                            id="openScannerBtn"
+                                            id="start-scan"
                                             class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md active:scale-95">
                                         <i data-lucide="scan" class="h-4 w-4"></i>
                                         <span>Scan</span>
@@ -226,77 +226,15 @@
     </div>
 </div>
 
- {{-- Enhanced form card with sophisticated design --}}
-<div id="scannerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden">
-        {{-- Modal header --}}
-        <div class="flex items-center justify-between p-6 border-b border-border">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                    <i data-lucide="scan" class="h-5 w-5 text-primary"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-foreground">Scan Barcode</h3>
-                    <p class="text-sm text-muted-foreground">Arahkan kamera ke barcode produk</p>
-                </div>
-            </div>
-            <button type="button"
-                    id="closeScannerBtn"
-                    class="w-10 h-10 rounded-xl hover:bg-muted flex items-center justify-center transition-colors"
-                    aria-label="Tutup scanner">
-                <i data-lucide="x" class="h-5 w-5 text-muted-foreground"></i>
-            </button>
-        </div>
-
-        {{-- Camera preview --}}
-        <div class="relative bg-black aspect-video">
-            <video id="scannerVideo"
-                   class="w-full h-full object-cover"
-                   autoplay
-                   playsinline>
-            </video>
-            <div class="absolute inset-0 pointer-events-none">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-64 h-40 border-4 border-primary rounded-2xl shadow-lg shadow-primary/50 animate-pulse"></div>
-                </div>
-            </div>
-            {{-- Status overlay --}}
-            <div id="scannerStatus" class="absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-black/80 backdrop-blur-md rounded-full text-white text-sm font-medium shadow-xl hidden">
-                <i data-lucide="loader-2" class="inline h-4 w-4 animate-spin mr-2"></i>
-                <span>Memindai...</span>
-            </div>
-        </div>
-
-        {{-- Result display --}}
-        <div id="scanResult" class="hidden p-6 border-t border-border bg-gradient-to-br from-success/5 to-primary/5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="check-circle" class="h-5 w-5 text-success"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-muted-foreground">Barcode Terdeteksi</p>
-                    <p id="scanResultText" class="text-lg font-bold text-foreground truncate"></p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Error display --}}
-        <div id="scanError" class="hidden p-6 border-t border-border bg-red-500/5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="alert-circle" class="h-5 w-5 text-red-500"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-medium text-red-600 dark:text-red-400" id="scanErrorText"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="previewCamera" class="absolute z-50 flex inset-0 hidden bg-black/50">
+    <div id="reader" class="m-auto" style="width: 100%; max-width: 400px; display:block;"></div>
 </div>
 
- {{-- JavaScript for password toggle functionality --}}
+{{-- JavaScript for password toggle functionality --}}
 <script src="{{ asset('js/admin/obat/form.js') }}"></script>
 
-<script src="{{ asset('js/cam.js') }}"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="{{ asset('js/admin/obat/scan.js') }}"></script>
+<script src="{{ asset('js/barcode-scanner.js') }}"></script>
 
 @endsection

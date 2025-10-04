@@ -4,6 +4,11 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+@if(session('error'))
+    <div class="alert error absolute p-4 bg-red-700/50 text-red-500 border rounded-md border-red-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
+        {{ session('error') ?? 'Error!' }}
+    </div>
+@endif
 <div class="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
     <div class="space-y-1 sm:space-y-2">
         <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
@@ -40,7 +45,7 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Penjualan Hari Ini</p>
-                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">Rp {{ $penjualanHariIni }}</p>
+                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ formatRupiah($penjualanHariIni) }}</p>
                     <p class="text-xs text-{{ $totalKenaikanPenjualan >= 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
                         @if($totalKenaikanPenjualan > 0)
                             <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
@@ -102,10 +107,6 @@
         <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h3 class="text-base sm:text-lg font-semibold text-foreground">Penjualan Mingguan</h3>
-                <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span class="text-xs sm:text-sm text-muted-foreground hidden sm:inline">Trend naik</span>
-                </div>
             </div>
             <div class="h-48 sm:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200/30 dark:border-blue-700/30">
                 <canvas id="salesChart"></canvas>
@@ -143,7 +144,7 @@
         <div class="overflow-x-auto -mx-4 sm:mx-0">
             <div class="inline-block min-w-full align-middle">
             @if (count($transaksis) === 0)
-                <h1 class="my-4 font-medium text-2xl text-foreground text-center">Tidak ada data transaksi!</h1>
+                <h1 class="my-4 font-medium text-xl text-foreground text-center">Tidak ada data transaksi!</h1>
             @else
                 <table class="min-w-full">
                     <thead>
@@ -173,7 +174,7 @@
                                     <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">{{ $transaksi->qty }} unit</span>
                                 </td>
                                 <td class="py-3 sm:py-4 px-2">
-                                    <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp {{ $transaksi->subtotal }}</span>
+                                    <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">{{ formatRupiah($transaksi->subtotal) }}</span>
                                 </td>
                                 <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
                                     <span class="text-sm text-muted-foreground">{{ timeAgo($transaksi->transaction->created_at) }}</span>
@@ -188,50 +189,12 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    const salesChart = new Chart(ctx, {
-        type: 'line', // bisa 'bar', 'line', 'pie', dll.
-        data: {
-            labels: @json($chartLabels), // tanggal
-            datasets: [{
-                label: 'Total Penjualan',
-                data: @json($chartTotals), // total penjualan per tanggal
-                borderColor: '#FACC15',   // kuning keemasan
-                backgroundColor: 'rgba(250, 204, 21, 0.3)', // transparan
-                borderWidth: 2,
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let value = context.raw;
-                            return 'Rp ' + value.toLocaleString();
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'Rp ' + value.toLocaleString();
-                        }
-                    }
-                }
-            }
-        }
-    });
+    const chartLabels = @json($chartLabels).reverse();
+    const chartTotals = @json($chartTotals).reverse();
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('js/admin/dashboard/chart.js') }}"></script>
 @endsection
 

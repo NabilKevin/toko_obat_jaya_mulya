@@ -1,4 +1,4 @@
-<div id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+<div id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-sidebar border-r border-sidebar-border transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
     <div class="p-4 lg:p-6">
         <div class="flex items-center space-x-2">
             <div class="sidebar-text">
@@ -14,8 +14,7 @@
                 ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'kasir.dashboard'],
                 ['icon' => 'package', 'label' => 'POS', 'route' => 'kasir.pos'],
                 ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'kasir.obat'],
-                ['icon' => 'users', 'label' => 'Riwayat Transaksi', 'route' => 'kasir.dashboard'],
-                ['icon' => 'users', 'label' => 'Laporan', 'route' => 'kasir.dashboard'],
+                ['icon' => 'users', 'label' => 'Riwayat Transaksi', 'route' => 'kasir.transaksi'],
             ];
         @endphp
 

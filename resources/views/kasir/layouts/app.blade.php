@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>@yield('title', 'Kasir - Toko Obat')</title>
     <title>@yield('title', 'Dashboard Admin - Toko Obat Jaya Mulya')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,6 +68,7 @@
   </head>
   <body class="h-full bg-background text-foreground font-sans">
     <div class="min-h-screen flex">
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
       @include('kasir.partials.sidebar')
       <div class="flex-1 flex flex-col min-w-0">
         @include('kasir.partials.header')

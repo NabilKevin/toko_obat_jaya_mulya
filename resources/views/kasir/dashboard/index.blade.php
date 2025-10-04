@@ -3,6 +3,11 @@
 @section('title', 'Dashboard Kasir')
 
 @section('content')
+@if(session('error'))
+    <div class="alert error absolute p-4 bg-red-700/50 text-red-500 border rounded-md border-red-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
+        {{ session('error') ?? 'Error!' }}
+    </div>
+@endif
   <div class="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
     <div class="space-y-1 sm:space-y-2">
         <h1 class="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
@@ -15,10 +20,17 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Penjualan Hari Ini</p>
-                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">Rp {{ $penjualanHariIni ?? '100.000' }}</p>
-                    <p class="text-xs text-{{ 0 >= 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
-                      <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                      <span class="truncate">+{{ $totalKenaikanPenjualan ?? 12 }}% dari kemarin</span>
+                    <p class="text-xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ formatRupiah($penjualanHariIni) }}</p>
+                    <p class="text-xs text-{{ $totalKenaikanPenjualan >= 0 ? 'green' : 'red' }}-500 mt-1 flex items-center">
+                        @if($totalKenaikanPenjualan > 0)
+                            <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">+{{ $totalKenaikanPenjualan }}% dari kemarin</span>
+                        @elseif ($totalKenaikanPenjualan < 0)
+                            <i data-lucide="trending-down" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">{{ $totalKenaikanPenjualan }}% dari kemarin</span>
+                        @else
+                            <span class="truncate">Tidak ada perubahan dari kemarin</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 flex-shrink-0 ml-3">
@@ -32,10 +44,10 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Transaksi</p>
-                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalStokMenipis ?? 53 }}</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalTransaksi }}</p>
                     <p class="text-xs text-yellow-500 mt-1 flex items-center">
                       <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                      <span class="truncate">+{{ $totalKenaikanPenjualan ?? 12 }}% dari kemarin</span>
+                      <span class="truncate">+{{ $totalKenaikanTransaksi }}% dari kemarin</span>
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/25 flex-shrink-0 ml-3">
@@ -49,10 +61,10 @@
             <div class="relative flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Item terjual</p>
-                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalUser ?? 23 }}</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalItemTerjual }}</p>
                     <p class="text-xs text-purple-500 mt-1 flex items-center">
                       <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                      <span class="truncate">+{{ $totalKenaikanPenjualan ?? 12 }}% dari kemarin</span>
+                      <span class="truncate">+{{ $totalKenaikanItemTerjual }}% dari kemarin</span>
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 flex-shrink-0 ml-3">
@@ -68,8 +80,8 @@
         </div>
         <div class="overflow-x-auto -mx-4 sm:mx-0">
             <div class="inline-block min-w-full align-middle">
-            @if (count([]) === 0)
-                <h1 class="my-4 font-medium text-2xl text-foreground text-center">Tidak ada data transaksi!</h1>
+            @if (count($transaksis) === 0)
+                <h1 class="my-4 font-medium text-xl text-foreground text-center">Tidak ada data transaksi!</h1>
             @else
                 <table class="min-w-full">
                     <thead>
@@ -99,7 +111,7 @@
                                     <span class="text-sm text-foreground bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">{{ $transaksi->qty }} unit</span>
                                 </td>
                                 <td class="py-3 sm:py-4 px-2">
-                                    <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">Rp {{ $transaksi->subtotal }}</span>
+                                    <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">{{ formatRupiah($transaksi->subtotal) }}</span>
                                 </td>
                                 <td class="py-3 sm:py-4 px-2 hidden md:table-cell">
                                     <span class="text-sm text-muted-foreground">{{ timeAgo($transaksi->transaction->created_at) }}</span>

@@ -9,14 +9,7 @@ class Get extends Controller
 {
     public function index()
     {
-        $obats = Obat::all()->map(function($obat) {
-            return [
-                'id' => $obat->id,
-                'nama' => $obat->nama,
-                'harga' => $obat->harga_jual,
-                'stok' => $obat->stok,
-            ];
-        });
+        $obats = Obat::get(['id', 'kode_barcode', 'nama', 'harga_jual as harga', 'stok']);
         return view('kasir.pos.index', ['obats' => $obats]);
     }
 }

@@ -11,24 +11,16 @@ class Get extends Controller
     public function index(Request $request)
     {
         $search = $request->search ? $request->search :"";
-        $obats = Obat::whereLike('nama', "%$search%")->paginate(10);
-        $from = ($obats->currentPage() - 1) * $obats->perPage() + 1;
+        $obats = Obat::whereLike('nama', "%$search%")->orWhereLike('kode_barcode', "%$search%")->paginate(10);
+        $obats->appends($request->query());
 
-        return view('kasir.obat.index',
-            [
-                'obats' => $obats,
-                'total' => $obats->total(),
-                'from' => $from > $obats->total() ? $from-1 : $from,
-                'to' => $from - 1 + $obats->count(),
-                'isFirstPage' => $obats->onFirstPage(),
-                'isLastPage' => $obats->onLastPage(),
-                'currentPage' => $obats->currentPage(),
-                'firstPage' => $obats->url(1),
-                'lastPage' => $obats->url($obats->lastPage()),
-                'nextPage' => $obats->nextPageUrl(),
-                'prevPage' => $obats->previousPageUrl(),
-                'search' => $search
-            ]
-        );
+        return view('kasir.obat.index',compact('search','obats'));
+    }
+    public function search(Request $request) {
+        $q = $request->get('q');
+        $obat = Obat::whereLike('nama', "%$q%")
+                ->orWhereLike('kode_barcode', "%$q%")
+                ->get(['id', 'kode_barcode', 'nama', 'harga_jual as harga', 'stok']);
+        return response()->json($obat);
     }
 }

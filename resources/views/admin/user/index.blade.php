@@ -6,7 +6,7 @@
 @section('content')
 <!-- Added mobile-responsive padding and layout optimizations -->
 @if(session('success'))
-    <div class="alert absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
+    <div class="alert success absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
         {{ session('success') ?? 'Berhasil!' }}
     </div>
 @endif
@@ -54,7 +54,7 @@
             <!-- Desktop Table View -->
             <div class="hidden lg:block">
             @if (count($users) === 0)
-                <h1 class="my-4 font-medium text-2xl text-foreground text-center">Tidak ada data user!</h1>
+                <h1 class="my-4 font-medium text-xl text-foreground text-center">Tidak ada data user!</h1>
             @endif
                 <table class="w-full">
                     <thead class="bg-gray-50 dark:bg-gray-900/50">
@@ -165,50 +165,54 @@
                 @endforeach
             </div>
         </div>
-        <!-- Replaced simple pagination with smart pagination for handling many pages -->
-        <div class="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                <div class="text-sm text-gray-700 dark:text-gray-300 text-center sm:text-left">
-                    Menampilkan <span class="font-medium">{{ $from }}</span> sampai <span class="font-medium">{{ $to }}</span> dari <span class="font-medium">{{ $total }}</span> hasil
+        <div class="px-4 md:px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 gap-2 md:gap-0">
+                <div class="text-sm text-gray-700 dark:text-gray-300 text-center md:text-left">
+                    Menampilkan <span class="font-medium">{{ $users->firstItem() }}</span> sampai <span class="font-medium">{{ $users->lastItem() }}</span> dari <span class="font-medium">{{ $users->total() }}</span> hasil
                 </div>
 
                 <!-- Smart Pagination Component -->
-                <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <!-- Mobile Page Info -->
-                    <div class="sm:hidden text-sm text-gray-600 dark:text-gray-400 font-medium">
-                        Menampilkan {{ $currentPage }} dari {{ $total }}
-                    </div>
-
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4">
                     <!-- Pagination Controls -->
-                    <div class="flex items-center space-x-1 sm:space-x-2">
-                        <!-- First Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isFirstPage) onclick="window.location.href='{{ $firstPage }}'">
-                            <i data-lucide="chevrons-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
-                            <span class="hidden lg:inline ml-1">First</span>
-                        </button>
-
-                        <!-- Previous Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isFirstPage) onclick="window.location.href='{{ $prevPage }}'">
-                            <i data-lucide="chevron-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
-                            <span class="hidden sm:inline ml-1">Prev</span>
-                        </button>
-
-                        <div class="flex items-center space-x-1">
-                            <!-- Current page -->
-                            <button class="px-3 py-2.5 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium shadow-md min-h-[48px] ring-2 ring-blue-200 dark:ring-blue-800">{{ $currentPage }}</button>
+                    <div class="flex gap-4 items-center flex-col md:flex-row">
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <!-- First Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($users->onFirstPage()) onclick="window.location.href='{{ $users->url(1) }}'">
+                                <i data-lucide="chevrons-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
+                                <span class="hidden xl:inline ml-1">First</span>
+                            </button>
+    
+                            <!-- Previous Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($users->onFirstPage()) onclick="window.location.href='{{ $users->previousPageUrl() }}'">
+                                <i data-lucide="chevron-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
+                                <span class="hidden lg:inline ml-1">Prev</span>
+                            </button>
+    
+                            <div class="flex items-center space-x-1">
+                                <!-- Current page -->
+                                <button class="px-3 py-2.5 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium shadow-md min-h-[48px] ring-2 ring-blue-200 dark:ring-blue-800">{{ $users->currentPage() }}</button>
+                            </div>
+    
+                            <!-- Next Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($users->onLastPage()) onclick="window.location.href='{{ $users->nextPageUrl() }}'">
+                                <span class="hidden lg:inline mr-1">Next</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
+                            </button>
+    
+                            <!-- Last Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($users->onLastPage()) onclick="window.location.href='{{ $users->url($users->lastPage()) }}'">
+                                <span class="hidden xl:inline mr-1">Last</span>
+                                <i data-lucide="chevrons-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
+                            </button>
                         </div>
-
-                        <!-- Next Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $nextPage }}'">
-                            <span class="hidden sm:inline mr-1">Next</span>
-                            <i data-lucide="chevron-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
-                        </button>
-
-                        <!-- Last Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $lastPage }}'">
-                            <span class="hidden lg:inline mr-1">Last</span>
-                            <i data-lucide="chevrons-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
-                        </button>
+                        <form action="" method="GET" class="flex gap-3 items-center">
+                            <span>Jump to page:</span>
+                            @if ($search != '')
+                            <input type="hidden" name="search" value="{{ $search }}">
+                            @endif
+                            <input id="inputPage" type="number" name="page" min="1" max="{{ $users->lastPage() }}" class="max-w-10 py-2 border rounded-md text-center dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-foreground" value="{{ $users->currentPage() }}" >
+                            <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 py-[0.675rem] px-3 text-white rounded-md text-sm font-medium active:scale-90 transition-all">Go</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -216,5 +220,6 @@
     </div>
 </div>
 
+<script src="{{ asset('js/paginate.js') }}"></script>
 @endsection
 

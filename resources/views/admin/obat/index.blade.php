@@ -5,7 +5,7 @@
 
 @section('content')
 @if(session('success'))
-    <div class="alert absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
+    <div class="alert success absolute p-4 bg-green-700/50 text-green-500 border rounded-md border-green-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
         {{ session('success') ?? 'Berhasil!' }}
     </div>
 @endif
@@ -27,14 +27,14 @@
     <div class="bg-muted rounded-lg border border-border">
 <div class="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <!-- CHANGE> Added search button next to search input -->
-            <form class="flex space-x-3" action="{{ route('admin.obat') }}">
+            <form class="flex space-y-3 sm:space-y-0 sm:space-x-3 flex-col sm:flex-row" action="{{ route('admin.obat') }}">
                 <div class="relative flex-1">
                     <input type="text"
                             name="search"
                             value="{{ $search }}"
                             id="search"
-                            placeholder="Cari user berdasarkan nama..."
-                            class="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
+                            placeholder="Cari user berdasarkan nama atau kode barcode..."
+                            class="kode_barcode w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
                     <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
                 </div>
                 <button type="submit" class="group relative bg-muted hover:bg-muted/80 border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
@@ -45,13 +45,17 @@
                     <span class="hidden sm:inline relative z-10">Reset</span>
                     <i data-lucide="x" class="inline sm:hidden relative z-10"></i>
                 </button>
+                <button type="button" id="start-scan" class="group relative bg-danger hover:bg-danger/80 border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                    <span class="hidden sm:inline relative z-10">Scan</span>
+                    <i data-lucide="scan" class="inline sm:hidden relative z-10"></i>  
+                </button>
             </form>
         </div>
 
         <div class="p-3 sm:p-6">
             <!-- Mobile-responsive grid layout -->
             @if (count($obats) === 0)
-                <h1 class="font-medium text-2xl text-foreground text-center">Tidak ada data obat!</h1>
+                <h1 class="font-medium text-xl text-foreground text-center">Tidak ada data obat!</h1>
             @endif
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 @foreach($obats as $obat)
@@ -119,7 +123,7 @@
                                 <div class="bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-sm font-medium text-slate-600 dark:text-slate-400">Expired</span>
-                                        <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ $obat['expired_at'] }}</span>
+                                        <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ Carbon\Carbon::parse($obat['expired_at'])->format('d-m-Y') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -130,53 +134,67 @@
                 @endforeach
             </div>
         </div>
-        <div class="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                <div class="text-sm text-gray-700 dark:text-gray-300 text-center sm:text-left">
-                    Menampilkan <span class="font-medium">{{ $from }}</span> sampai <span class="font-medium">{{ $to }}</span> dari <span class="font-medium">{{ $total }}</span> hasil
+        <div class="px-4 md:px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 gap-2 md:gap-0">
+                <div class="text-sm text-gray-700 dark:text-gray-300 text-center md:text-left">
+                    Menampilkan <span class="font-medium">{{ $obats->firstItem() }}</span> sampai <span class="font-medium">{{ $obats->lastItem() }}</span> dari <span class="font-medium">{{ $obats->total() }}</span> hasil
                 </div>
 
                 <!-- Smart Pagination Component -->
-                <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <!-- Mobile Page Info -->
-                    <div class="sm:hidden text-sm text-gray-600 dark:text-gray-400 font-medium">
-                        Menampilkan {{ $currentPage }} dari {{ $total }}
-                    </div>
-
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4">
                     <!-- Pagination Controls -->
-                    <div class="flex items-center space-x-1 sm:space-x-2">
-                        <!-- First Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isFirstPage) onclick="window.location.href='{{ $firstPage }}'">
-                            <i data-lucide="chevrons-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
-                            <span class="hidden lg:inline ml-1">First</span>
-                        </button>
-
-                        <!-- Previous Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isFirstPage) onclick="window.location.href='{{ $prevPage }}'">
-                            <i data-lucide="chevron-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
-                            <span class="hidden sm:inline ml-1">Prev</span>
-                        </button>
-
-                        <div class="flex items-center space-x-1">
-                            <!-- Current page -->
-                            <button class="px-3 py-2.5 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium shadow-md min-h-[48px] ring-2 ring-blue-200 dark:ring-blue-800">{{ $currentPage }}</button>
+                    <div class="flex gap-4 items-center flex-col md:flex-row">
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <!-- First Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($obats->onFirstPage()) onclick="window.location.href='{{ $obats->url(1) }}'">
+                                <i data-lucide="chevrons-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
+                                <span class="hidden xl:inline ml-1">First</span>
+                            </button>
+    
+                            <!-- Previous Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($obats->onFirstPage()) onclick="window.location.href='{{ $obats->previousPageUrl() }}'">
+                                <i data-lucide="chevron-left" class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"></i>
+                                <span class="hidden lg:inline ml-1">Prev</span>
+                            </button>
+    
+                            <div class="flex items-center space-x-1">
+                                <!-- Current page -->
+                                <button class="px-3 py-2.5 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium shadow-md min-h-[48px] ring-2 ring-blue-200 dark:ring-blue-800">{{ $obats->currentPage() }}</button>
+                            </div>
+    
+                            <!-- Next Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($obats->onLastPage()) onclick="window.location.href='{{ $obats->nextPageUrl() }}'">
+                                <span class="hidden lg:inline mr-1">Next</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
+                            </button>
+    
+                            <!-- Last Page -->
+                            <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($obats->onLastPage()) onclick="window.location.href='{{ $obats->url($obats->lastPage()) }}'">
+                                <span class="hidden xl:inline mr-1">Last</span>
+                                <i data-lucide="chevrons-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
+                            </button>
                         </div>
-
-                        <!-- Next Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $nextPage }}'">
-                            <span class="hidden sm:inline mr-1">Next</span>
-                            <i data-lucide="chevron-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
-                        </button>
-
-                        <!-- Last Page -->
-                        <button class="group px-2 sm:px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center font-medium min-h-[44px] sm:min-h-[48px] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" @disabled($isLastPage) onclick="window.location.href='{{ $lastPage }}'">
-                            <span class="hidden lg:inline mr-1">Last</span>
-                            <i data-lucide="chevrons-right" class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"></i>
-                        </button>
+                        <form action="" method="GET" class="flex gap-3 items-center">
+                            <span>Jump to page:</span>
+                            @if ($search != '')
+                            <input type="hidden" name="search" value="{{ $search }}">
+                            @endif
+                            <input id="inputPage" type="number" name="page" min="1" max="{{ $obats->lastPage() }}" class="max-w-10 py-2 border rounded-md text-center dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-foreground" value="{{ $obats->currentPage() }}" >
+                            <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 py-[0.675rem] px-3 text-white rounded-md text-sm font-medium active:scale-90 transition-all">Go</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div id="previewCamera" class="absolute z-50 flex inset-0 hidden bg-black/50">
+    <div id="reader" class="m-auto" style="width: 100%; max-width: 400px; display:block;"></div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="{{ asset('js/paginate.js') }}"></script>
+<script src="{{ asset('js/admin/obat/scan.js') }}"></script>
+<script src="{{ asset('js/barcode-scanner.js') }}"></script>
 @endsection

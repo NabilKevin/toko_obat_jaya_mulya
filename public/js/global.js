@@ -1,11 +1,9 @@
-console.log("[v0] Initializing theme system...");
 
 // Initialize Lucide icons with error handling
 function initIcons() {
     try {
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
-            console.log("[v0] Lucide icons initialized successfully");
         } else {
             console.error("[v0] Lucide library not loaded");
         }
@@ -18,12 +16,10 @@ function initIcons() {
 function initTheme() {
     try {
         const savedTheme = localStorage.getItem('theme') || 'light';
-        console.log("[v0] Loading saved theme:", savedTheme);
 
         document.documentElement.className = savedTheme;
         updateThemeIcon();
 
-        console.log("[v0] Theme initialized successfully");
     } catch (error) {
         console.error("[v0] Error initializing theme:", error);
         // Fallback to light theme
@@ -36,7 +32,6 @@ function toggleTheme() {
         const currentTheme = document.documentElement.className;
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-        console.log("[v0] Switching theme from", currentTheme, "to", newTheme);
 
         document.documentElement.className = newTheme;
         localStorage.setItem('theme', newTheme);
@@ -51,7 +46,6 @@ function toggleTheme() {
             }, 150);
         }
 
-        console.log("[v0] Theme switched successfully to", newTheme);
     } catch (error) {
         console.error("[v0] Error toggling theme:", error);
     }
@@ -65,7 +59,6 @@ function updateThemeIcon() {
         if (themeIcon) {
             themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
             initIcons(); // Re-initialize icons
-            console.log("[v0] Theme icon updated to", isDark ? 'sun' : 'moon');
         }
     } catch (error) {
         console.error("[v0] Error updating theme icon:", error);
@@ -74,14 +67,12 @@ function updateThemeIcon() {
 
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("[v0] DOM loaded, initializing...");
     initTheme();
     initIcons();
 });
 
 // Also initialize icons when the script loads
 window.addEventListener('load', function() {
-    console.log("[v0] Window loaded, re-initializing icons...");
     initIcons();
 });
 
@@ -95,7 +86,7 @@ function toggleSidebar() {
         document.body.classList.toggle('overflow-hidden');
     } else { // Desktop
         sidebar.classList.toggle('w-64');
-        sidebar.classList.toggle('w-16');
+        sidebar.classList.toggle('w-20');
 
         // Toggle text visibility
         const sidebarTexts = sidebar.querySelectorAll('.sidebar-text');
@@ -139,4 +130,12 @@ function formatInputNumber(e, hargaRaw) {
     let number = parseInt(raw, 10);
     e.target.value = new Intl.NumberFormat('id-ID').format(number);
     hargaRaw.value = number; // 👉 yang dikirim ke server angka murni
+}
+
+function parseNumber(str) {
+  return parseInt(str.replace(/[^0-9-]/g, "")) || 0
+}
+
+function formatNumber(value) {
+  return new Intl.NumberFormat('id-ID').format(value || 0)
 }

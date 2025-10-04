@@ -12,29 +12,13 @@ class Get extends Controller
     {
         $search = $request->search ? $request->search :"";
         $users = User::whereLike('nama', "%$search%")->orWhereLike('username', "%$search%")->paginate(10);
-        $from = ($users->currentPage() - 1) * $users->perPage() + 1;
         $roleColors = [
             'admin' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
             'kasir' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
         ];
+        $users->appends($request->query());
 
-        return view('admin.user',
-            [
-                'users' => $users,
-                'total' => $users->total(),
-                'from' => $from > $users->total() ? $from-1 : $from,
-                'to' => $from - 1 + $users->count(),
-                'roleColors' => $roleColors,
-                'isFirstPage' => $users->onFirstPage(),
-                'isLastPage' => $users->onLastPage(),
-                'currentPage' => $users->currentPage(),
-                'firstPage' => $users->url(1),
-                'lastPage' => $users->url($users->lastPage()),
-                'nextPage' => $users->nextPageUrl(),
-                'prevPage' => $users->previousPageUrl(),
-                'search' => $search
-            ]
-        );
+        return view('admin.user.index',compact('users','search','roleColors'));
     }
 
     public function create()
