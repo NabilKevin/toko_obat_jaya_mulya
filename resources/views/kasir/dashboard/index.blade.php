@@ -46,8 +46,15 @@
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Transaksi</p>
                     <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalTransaksi }}</p>
                     <p class="text-xs text-yellow-500 mt-1 flex items-center">
-                      <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                      <span class="truncate">+{{ $totalKenaikanTransaksi }}% dari kemarin</span>
+                        @if($totalKenaikanTransaksi > 0)
+                            <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">+{{ $totalKenaikanTransaksi }}% dari kemarin</span>
+                        @elseif ($totalKenaikanTransaksi < 0)
+                            <i data-lucide="trending-down" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">{{ $totalKenaikanTransaksi }}% dari kemarin</span>
+                        @else
+                            <span class="truncate">Tidak ada perubahan dari kemarin</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/25 flex-shrink-0 ml-3">
@@ -63,8 +70,15 @@
                     <p class="text-xs sm:text-sm text-muted-foreground font-medium">Item terjual</p>
                     <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalItemTerjual }}</p>
                     <p class="text-xs text-purple-500 mt-1 flex items-center">
-                      <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
-                      <span class="truncate">+{{ $totalKenaikanItemTerjual }}% dari kemarin</span>
+                        @if($totalKenaikanItemTerjual > 0)
+                            <i data-lucide="trending-up" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">+{{ $totalKenaikanItemTerjual }}% dari kemarin</span>
+                        @elseif ($totalKenaikanItemTerjual < 0)
+                            <i data-lucide="trending-down" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                            <span class="truncate">{{ $totalKenaikanItemTerjual }}% dari kemarin</span>
+                        @else
+                            <span class="truncate">Tidak ada perubahan dari kemarin</span>
+                        @endif
                     </p>
                 </div>
                 <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 flex-shrink-0 ml-3">
@@ -126,5 +140,3 @@
     </div>
 </div>
 @endsection
-
-

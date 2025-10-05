@@ -114,7 +114,7 @@
                                                                 class="{{ $errors->has('tipe_id') ? 'border-red-500' : 'border-gray-500' }} peer w-full px-4 pt-6 pb-2 bg-muted border-2 border-border rounded-2xl text-foreground focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 text-base min-h-[64px] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 focus:shadow-xl focus:shadow-primary/10 appearance-none cursor-pointer">
                                                         <option value="" class="text-muted-foreground">Pilih Tipe Obat</option>
                                                         @foreach ($tipeobat as $tipe)
-                                                            <option value="{{ $tipe->id }}" class="text-foreground" {{ old('tipe_id', $obat->tipe) == $tipe->nama ? 'selected' : '' }}>{{ $tipe->nama }}</option>
+                                                            <option value="{{ $tipe->id }}" class="text-foreground" {{ old('tipe_id', $obat->tipe->nama) == $tipe->nama ? 'selected' : '' }}>{{ $tipe->nama }}</option>
                                                         @endforeach
                                                 </select>
                                                 <label for="tipe_id"

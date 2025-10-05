@@ -234,7 +234,6 @@
 <script src="{{ asset('js/admin/obat/form.js') }}"></script>
 
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-<script src="{{ asset('js/admin/obat/scan.js') }}"></script>
 <script src="{{ asset('js/barcode-scanner.js') }}"></script>
 
 @endsection

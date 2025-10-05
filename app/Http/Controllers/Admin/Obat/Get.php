@@ -25,7 +25,7 @@ class Get extends Controller
     }
     public function edit($id)
     {
-        $obat = Obat::find($id);
+        $obat = Obat::with('tipe')->find($id);
 
         if (!$obat) {
             return redirect()->back()->with("error","Obat tidak ditemukan!");

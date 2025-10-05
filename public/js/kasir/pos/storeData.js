@@ -30,7 +30,7 @@ const bayar = async e => {
     isBayar = true;
     disableButton(e)
     try {
-      fetch('/pos', {
+      fetch(`${BASE_URL}pos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,6 +60,8 @@ const bayar = async e => {
         updateTable()
         updateTextHarga()
         getDataObat()
+
+        isBayar = false;
       })
     } catch(err) {
       console.error(err); 

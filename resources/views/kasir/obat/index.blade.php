@@ -31,18 +31,20 @@
                             class="kode_barcode w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base min-h-[48px]">
                     <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
                 </div>
-                <button type="submit" class="group relative bg-muted hover:bg-muted/80 border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
-                    <span class="hidden sm:inline relative z-10">Cari</span>
-                    <i data-lucide="search" class="inline sm:hidden relative z-10"></i>
-                </button>
-                <button onclick="document.querySelector('#search').value = ''; input.closest('form').submit();" class="group relative border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
-                    <span class="hidden sm:inline relative z-10">Reset</span>
-                    <i data-lucide="x" class="inline sm:hidden relative z-10"></i>
-                </button>
-                <button type="button" id="start-scan" class="group relative border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
-                    <span class="hidden sm:inline relative z-10">Scan</span>
-                    <i data-lucide="scan" class="inline sm:hidden relative z-10"></i>  
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button type="submit" class="grow group relative bg-muted hover:bg-muted/80 border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                        <span class="hidden sm:inline relative z-10">Cari</span>
+                        <i data-lucide="search" class="inline sm:hidden relative z-10"></i>
+                    </button>
+                    <button onclick="document.querySelector('#search').value = ''; input.closest('form').submit();" class="grow group relative border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                        <span class="hidden sm:inline relative z-10">Reset</span>
+                        <i data-lucide="x" class="inline sm:hidden relative z-10"></i>
+                    </button>
+                    <button type="button" id="start-scan" class="grow group relative border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                        <span class="hidden sm:inline relative z-10">Scan</span>
+                        <i data-lucide="scan" class="inline sm:hidden relative z-10"></i>  
+                    </button>
+                </div>
             </form>
         </div>
 

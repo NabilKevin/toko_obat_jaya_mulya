@@ -30,7 +30,7 @@
           <h1 class="font-medium text-xl text-foreground text-center">Tidak ada data transaksi!</h1>
         @endif
         @foreach ($transaksis as $transaksi)
-          <tr class="border-b">
+          <tr class="border-b dark:border-neutral-800">
             <td class="text-center px-4 py-2">{{ $transaksi->kode }}</td>
             <td class="text-center px-4 py-2 hidden md:table-cell">{{ $transaksi->name }}</td>
             <td class="text-center px-4 py-2 hidden sm:table-cell">{{ $transaksi->qty }}</td>

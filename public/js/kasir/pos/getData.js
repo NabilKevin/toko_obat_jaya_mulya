@@ -41,7 +41,7 @@ const updateTableObat = (data, isSkeleton) => {
 
 const fetchDataObat = async () => {
   try {
-    const res = await fetch(`/obat/search?q=${search.value}`);
+    const res = await fetch(`${BASE_URL}obat/search?q=${search.value}`);
     const data = await res.json();
     updateTableObat(data, false);
   } catch(e) {

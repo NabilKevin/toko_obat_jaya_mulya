@@ -58,13 +58,9 @@
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
-      (function() {
-        try {
-          const stored = localStorage.getItem('theme');
-          if (stored === 'dark') document.documentElement.classList.add('dark');
-        } catch (_) {}
-      })();
+      const BASE_URL = "{{ url('/') }}/";
     </script>
+    <script src="{{ asset('js/global.js') }}"></script>
   </head>
   <body class="h-full bg-background text-foreground font-sans">
     <div class="min-h-screen flex">
@@ -77,7 +73,7 @@
         </main>
       </div>
     </div>
-    <script src="{{ asset('js/global.js') }}"></script>
+
     @stack('scripts')
   </body>
 </html>

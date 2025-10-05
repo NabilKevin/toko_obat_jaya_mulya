@@ -17,8 +17,10 @@ class Post extends Controller
       return redirect()->back()->with("error","Username atau password salah!");
     }
 
+    $dashboard = Auth::user()->role === 'admin' ? 'admin' : '';
+
     $request->session()->regenerate();
-    return redirect('/admin');
+    return redirect('/' . $dashboard);
   }
   public function logout(Request $request)
   {

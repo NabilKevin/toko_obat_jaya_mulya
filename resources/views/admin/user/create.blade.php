@@ -37,7 +37,7 @@
                     @csrf
 
                      {{-- Enhanced personal information section --}}
-                    <div class="space-y-6">
+                    <div class="space-y-6 mb-4">
                         <div class="flex items-center space-x-3 pb-4 border-b border-border">
                             <h3 class="text-lg font-semibold text-foreground">Informasi Personal</h3>
                         </div>

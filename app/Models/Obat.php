@@ -8,4 +8,8 @@ class Obat extends Model
 {
     protected $guarded = ['id'];
     protected $table = 'obat';
+    
+    public function tipe() {
+        return $this->belongsTo(TipeObat::class, 'tipe_id', 'id');
+    }
 }

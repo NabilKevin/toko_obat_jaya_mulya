@@ -29,11 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 qrbox: { width: 250, height: 250 } // area scan
             },
             (decodedText, decodedResult) => {
-                // Masukkan hasil scan ke input
-                afterScan(decodedText)
+                const format = decodedResult.result.format.formatName;
 
-                // Stop kamera setelah dapat hasil
-                closeCam()
+                if (["CODE_128", "EAN_13"].includes(format)) {
+                    // Masukkan hasil scan ke input
+                    afterScan(decodedText)
+    
+                    // Stop kamera setelah dapat hasil
+                    closeCam()
+                }
             },
             (errorMessage) => {
                 // console.error(errorMessage)
