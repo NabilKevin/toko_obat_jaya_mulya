@@ -9,7 +9,7 @@ class StoreRequest extends FormRequest
   public function rules()
   {
     return [
-      'kode_barcode' => 'required|size:13',
+      'kode_barcode' => 'required|size:13|unique:obat,kode_barcode',
       'nama' => 'required|max:255',
       'stok' => 'required|integer',
       'tipe_id' => 'required|exists:tipeobat,id',
