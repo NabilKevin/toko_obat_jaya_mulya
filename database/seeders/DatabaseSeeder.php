@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Obat;
 use App\Models\TipeObat;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -40,5 +41,24 @@ class DatabaseSeeder extends Seeder
                 "nama"=> $value,
             ]);
         }
+
+        Obat::create([
+            'kode_barcode' => '8994887014569',
+            'nama' => 'Sarung tangan medis',
+            'stok' => 1000,
+            'tipe_id' => 1,
+            'harga_modal' => '',
+            'harga_jual' => '',
+            'expired_at' => '',
+        ]);
+        Obat::create([
+            'kode_barcode' => '',
+            'nama' => '',
+            'stok' => '',
+            'tipe_id' => '',
+            'harga_modal' => '',
+            'harga_jual' => '',
+            'expired_at' => '',
+        ]);
     }
 }

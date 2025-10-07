@@ -137,36 +137,67 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Grafik Penjualan (Line Chart) -->
         <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 class="text-base sm:text-lg font-semibold text-foreground">Penjualan Mingguan</h3>
+                <h3 class="text-base sm:text-lg font-semibold text-foreground">Total Penjualan (Mingguan)</h3>
             </div>
-            <div class="h-48 sm:h-64 flex items-center justify-center text-muted-foreground bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200/30 dark:border-blue-700/30">
+            <div class="h-48 sm:h-64">
                 <canvas id="salesChart"></canvas>
             </div>
         </div>
 
+        <!-- Grafik Modal (Bar Chart) -->
         <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 class="text-base sm:text-lg font-semibold text-foreground">Overview Inventory</h3>
-                <span class="text-xs sm:text-sm text-muted-foreground bg-slate-200/50 dark:bg-slate-700/50 px-2 py-1 rounded-full">{{ $totalStokObat }} total</span>
+                <h3 class="text-base sm:text-lg font-semibold text-foreground">Modal (Mingguan)</h3>
             </div>
-            <div class="space-y-3 sm:space-y-4">
-                @php
-                    $colors = ['green', 'blue', 'purple', 'yellow'];
-                @endphp
-                @foreach ($overviewObats as $i => $d)
-                    <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-foreground">{{ $d['nama'] }}</span>
-                            <span class="text-sm font-bold text-foreground">{{ $d['stok'] }} unit</span>
-                        </div>
-                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-{{ $colors[$i] }}-500 to-{{ $colors[$i] }}-600 h-2 rounded-full" style="width: {{ $d['stok']/$totalStokObat *100 }}%"></div>
-                        </div>
+            <div class="h-48 sm:h-64">
+                <canvas id="modalChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Grafik Keuntungan (Area Chart) -->
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 class="text-base sm:text-lg font-semibold text-foreground">Keuntungan (Mingguan)</h3>
+            </div>
+            <div class="h-48 sm:h-64">
+                <canvas id="profitChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Rasio Keuntungan (Donut Chart) -->
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 class="text-base sm:text-lg font-semibold text-foreground">Rasio Keuntungan</h3>
+            </div>
+            <div class="h-48 sm:h-64 flex items-center justify-center">
+                <canvas id="ratioChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div class="flex items-center justify-between mb-4 sm:mb-6">
+            <h3 class="text-base sm:text-lg font-semibold text-foreground">Overview Inventory</h3>
+            <span class="text-xs sm:text-sm text-muted-foreground bg-slate-200/50 dark:bg-slate-700/50 px-2 py-1 rounded-full">{{ $totalStokObat }} total</span>
+        </div>
+        <div class="space-y-3 sm:space-y-4">
+            @php
+                $colors = ['green', 'blue', 'purple', 'yellow'];
+            @endphp
+            @foreach ($overviewObats as $i => $d)
+                <div class="p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/30 dark:border-slate-700/30">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-foreground">{{ $d['nama'] }}</span>
+                        <span class="text-sm font-bold text-foreground">{{ $d['stok'] }} unit</span>
                     </div>
-                @endforeach
-            </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-{{ $colors[$i] }}-500 to-{{ $colors[$i] }}-600 h-2 rounded-full" style="width: {{ $d['stok']/$totalStokObat *100 }}%"></div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
     <div>
@@ -294,8 +325,14 @@
 </div>
 
 <script>
-    const chartLabels = @json($chartLabels).reverse();
-    const chartTotals = @json($chartTotals).reverse();
+    const totalPenjualanLabels = @json($totalPenjualanLabels).reverse();
+    const totalPenjualanTotals = @json($totalPenjualanTotals).reverse();
+
+    const totalModalLabels = @json($totalModalLabels).reverse();
+    const totalModalTotals = @json($totalModalTotals).reverse(); 
+    
+    const totalKeuntunganLabels = @json($totalKeuntunganLabels).reverse();
+    const totalKeuntunganTotals = @json($totalKeuntunganTotals).reverse();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

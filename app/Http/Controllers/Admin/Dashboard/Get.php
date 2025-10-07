@@ -13,15 +13,60 @@ use Illuminate\Http\Request;
 
 class Get extends Controller
 {
-    public function index()
+    private function getDataChart($transaksis)
     {
-        $obats = Obat::all();
-        $users = User::all();
-        
-        $totalObat = $obats->count();
-        $totalStokMenipis = (clone $obats)->where('stok', '<', 10)->count();
-        $totalUser = $users->count();
+        $totalPenjualan = (clone $transaksis)
+            ->select(
+                DB::raw("DATE_FORMAT(transaction.created_at, '%Y-%m') as bulan"),
+                DB::raw('SUM(transactionitem.subtotal) as total')
+            )
+            ->where('transaction.created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->get();
 
+        $totalPenjualanLabels = $totalPenjualan->pluck('bulan');
+        $totalPenjualanTotals = $totalPenjualan->pluck('total');
+
+        // --- Total Modal ---
+        $totalModal = (clone $transaksis)
+            ->select(
+                DB::raw("DATE_FORMAT(transaction.created_at, '%Y-%m') as bulan"),
+                DB::raw('SUM(transactionitem.harga_modal * transactionitem.qty) AS total')
+            )
+            ->where('transaction.created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->get();
+
+        $totalModalLabels = $totalModal->pluck('bulan');
+        $totalModalTotals = $totalModal->pluck('total');
+
+        // --- Total Keuntungan ---
+        $totalKeuntungan = (clone $transaksis)
+            ->select(
+                DB::raw("DATE_FORMAT(transaction.created_at, '%Y-%m') as bulan"),
+                DB::raw('SUM((transactionitem.harga_jual - transactionitem.harga_modal) * transactionitem.qty) AS total')
+            )
+            ->where('transaction.created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->get();
+
+        $totalKeuntunganLabels = $totalKeuntungan->pluck('bulan');
+        $totalKeuntunganTotals = $totalKeuntungan->pluck('total');
+
+        return [
+            'penjualanLabels' => $totalPenjualanLabels,
+            'penjualanTotals' => $totalPenjualanTotals,
+            'modalLabels' => $totalModalLabels,
+            'modalTotals' => $totalModalTotals,
+            'keuntunganLabels' => $totalKeuntunganLabels,
+            'keuntunganTotals' => $totalKeuntunganTotals,
+        ];
+    }
+    private function getDataSummary($obats, $users)
+    {
         $startLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
@@ -42,11 +87,15 @@ class Get extends Controller
             return ['nama' => $obat->nama, 'stok' => $obat->stok];
         })->sortBy('stok', SORT_NATURAL, true)->take(4);
 
-        $transaksis = TransactionItem::select('transactionitem.*')
-            ->join('transaction', 'transactionitem.transaction_id', '=', 'transaction.id')
-            ->orderBy('transaction.created_at', 'desc')
-            ->with(['obat', 'transaction']);
-
+        return [
+            'kenaikanObat' => $totalKenaikanObat,
+            'kenaikanUser' => $totalKenaikanUser,
+            'listStokObat' => $listStokObats,
+            'totalStokObat' => $totalStokObat
+        ];
+    }
+    private function getDataTransaksi($transaksis) 
+    {
         $transaksi = (clone $transaksis)->take(3)->get();
 
         $penjualanHariIni = (clone $transaksis)->whereDate('created_at', Carbon::today())->sum('subtotal');
@@ -93,18 +142,31 @@ class Get extends Controller
         }
         // ambil data penjualan per hari selama 7 hari terakhir
 
-        $chartPenjualan = (clone $transaksis)->select(
-            DB::raw('DATE(created_at) as tanggal'),
-            DB::raw('SUM(subtotal) as total')
-        )
-        ->where('created_at', '>=', Carbon::now()->subDays(6))
-        ->groupBy('tanggal')
-        ->orderBy('tanggal', 'asc')
-        ->get();
+        return [
+            'transaksi' => $transaksi,
+            'penjualanHariIni' => $penjualanHariIni,
+            'kenaikanPenjualan' => $totalKenaikanPenjualan
+        ];
+    }
+    public function index()
+    {
+        $obats = Obat::all();
+        $users = User::all();
+        
+        $totalObat = $obats->count();
+        $totalStokMenipis = (clone $obats)->where('stok', '<', 10)->count();
+        $totalUser = $users->count();
 
-        // siapkan array label dan data untuk chart
-        $chartLabels = $chartPenjualan->pluck('tanggal');
-        $chartTotals = $chartPenjualan->pluck('total');
+        $dataSummary = $this->getDataSummary($obats, $users);
+
+        $transaksis = TransactionItem::select('transactionitem.*')
+            ->join('transaction', 'transactionitem.transaction_id', '=', 'transaction.id')
+            ->orderBy('transaction.created_at', 'desc')
+            ->with(['obat', 'transaction']);
+
+        $dataTransaksi = $this->getDataTransaksi($transaksis);
+
+        $dataChart = $this->getDataChart($transaksis);
 
         return view('admin.dashboard.index', [
             'totalObat' => $totalObat,
@@ -130,19 +192,25 @@ class Get extends Controller
 
             'totalobatterjual' => $totalobatterjual,
 
-            'totalKenaikanObat' => $totalKenaikanObat,
-            'totalKenaikanUser' => $totalKenaikanUser < 0 ? 0: $totalKenaikanUser,
+            'totalKenaikanObat' => $dataSummary['kenaikanObat'],
+            'totalKenaikanUser' => $dataSummary['kenaikanUser'] < 0 ? 0: $dataSummary['kenaikanUser'],
 
-            'overviewObats' => $listStokObats,
-            'totalStokObat' => $totalStokObat,
+            'overviewObats' => $dataSummary['listStokObat'],
+            'totalStokObat' => $dataSummary['totalStokObat'],
 
-            'transaksis' => $transaksi,
+            'transaksis' => $dataTransaksi['transaksi'],
 
-            'penjualanHariIni' => $penjualanHariIni,
-            'totalKenaikanPenjualan' => $totalKenaikanPenjualan,
+            'penjualanHariIni' => $dataTransaksi['penjualanHariIni'],
+            'totalKenaikanPenjualan' => $dataTransaksi['kenaikanPenjualan'],
 
-            'chartLabels' => $chartLabels,
-            'chartTotals' => $chartTotals
+            'totalPenjualanLabels' => $dataChart['penjualanLabels'],
+            'totalPenjualanTotals' => $dataChart['penjualanTotals'],
+
+            'totalModalLabels' => $dataChart['modalLabels'],
+            'totalModalTotals' => $dataChart['modalTotals'],
+
+            'totalKeuntunganLabels' => $dataChart['keuntunganLabels'],
+            'totalKeuntunganTotals' => $dataChart['keuntunganTotals'],
         ]);
     }
 }
