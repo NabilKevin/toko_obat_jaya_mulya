@@ -21,16 +21,22 @@ const toggleAlert = (alert) => {
 
 const bayar = async e => {
   e.preventDefault()
-  if(data.length === 0) {
+
+  if (data.length === 0) {
     alert('Keranjang kosong!')
-  } else if (parseNumber(textTotalKembalian.textContent) < 0) {
+    return
+  }
+  if (parseNumber(textTotalKembalian.textContent) < 0) {
     alert('Uang kurang!')
-  } else {
-  if(!isBayar) {
-    isBayar = true;
+    return
+  }
+
+  if (!isBayar) {
+    isBayar = true
     disableButton(e)
+
     try {
-      fetch(`${BASE_URL}pos`, {
+      const response = await fetch(`${BASE_URL}pos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,32 +49,43 @@ const bayar = async e => {
           totalChange: parseNumber(textTotalKembalian.textContent)
         })
       })
-      .then(res => res.json())
-      .then(d => {
-        const alert = document.getElementById('alert')
-        alert.textContent = d?.message
-        toggleAlert(alert)
-        setTimeout(() => {
-          toggleAlert(alert)
-        }, 3100)
 
-        inputTotalBayar.value = ''
+      const d = await response.json()
 
-        resetButton(e)
-        data.length = 0
+      if (d.status === 'success' && d.redirect_url) {
+        // ✅ langsung redirect ke halaman struk
+        window.location.href = d.redirect_url
+        return
+      }
 
-        updateTable()
-        updateTextHarga()
-        getDataObat()
+      // jika tidak redirect, tetap tampilkan alert sukses
+      const alert = document.getElementById('alert')
+      alert.textContent = d?.message || 'Transaksi berhasil!'
+      toggleAlert(alert)
+      setTimeout(() => toggleAlert(alert), 3100)
 
-        isBayar = false;
-      })
-    } catch(err) {
-      console.error(err); 
+      inputTotalBayar.value = ''
+      resetButton(e)
+      data.length = 0
+      updateTable()
+      updateTextHarga()
+      getDataObat()
+      isBayar = false
+
+    } catch (err) {
+      console.error(err)
+      alert('Terjadi kesalahan saat menyimpan transaksi.')
+      resetButton(e)
+      isBayar = false
     }
-  }
   }
 }
 
 btnBayar.addEventListener('click', bayar)
-
+inputTotalBayar.addEventListener('inputTotalBayar', () => {
+  let val = inputTotalBayar.value
+  val = val.replace(/[^0-9]/g, '')
+  if (val === '') val = '0'
+  inputTotalBayar.value = formatRupiah(val)
+  updateTextHarga()
+})

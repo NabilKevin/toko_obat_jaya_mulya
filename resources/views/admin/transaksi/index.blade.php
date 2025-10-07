@@ -1,6 +1,6 @@
-@extends('kasir.layouts.app')
+@extends('admin.layouts.app')
 
-@section('title', 'Transaksi - Kasir')
+@section('title', 'Transaksi - Admin')
 
 @section('content')
 <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">

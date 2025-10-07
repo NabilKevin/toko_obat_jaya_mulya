@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/user/{id}/edit', [Admin\User\Get::class, 'edit'])->name('admin.user.edit');
             Route::put('/user/{id}', [Admin\User\Put::class, 'update'])->name('admin.user.update');
             Route::delete('/user/{id}', [Admin\User\Delete::class, 'destroy'])->name('admin.user.delete');
+
+            Route::get('/transaksi', [Admin\Transaksi\Get::class, 'index'])->name('admin.transaksi');
         });
     });
     
@@ -40,5 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/obat', [Kasir\Obat\Get::class, 'index'])->name('kasir.obat');
         Route::get('/obat/search', [Kasir\Obat\Get::class, 'search'])->name('kasir.obat.search');
         Route::get('/transaksi', [Kasir\Transaksi\Get::class, 'index'])->name('kasir.transaksi');
+        Route::get('/kasir/struk/{id}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
     });
 });

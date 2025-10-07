@@ -14,6 +14,7 @@
                 ['icon' => 'home', 'label' => 'Dashboard', 'route' => 'admin.dashboard'],
                 ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'admin.obat'],
                 ['icon' => 'users', 'label' => 'Data User', 'route' => 'admin.user'],
+                ['icon' => 'file-text', 'label' => 'Data Transaksi', 'route' => 'admin.transaksi'],
             ];
         @endphp
 

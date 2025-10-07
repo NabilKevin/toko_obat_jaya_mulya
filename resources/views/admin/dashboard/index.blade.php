@@ -84,6 +84,32 @@
                 </div>
             </div>
         </div>
+        // Total Keuntungan Bersih
+        <div class="group relative bg-gradient-to-br from-green-500/10 via-green-600/5 to-transparent border border-green-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative flex items-center justify-between">
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Keuntungan Bersih</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ formatRupiah($totalKeuntungan) }}</p>
+                </div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 flex-shrink-0 ml-3">
+                    <i data-lucide="dollar-sign" class="h-6 w-6 sm:h-7 sm:w-7 text-white"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="group relative bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent border border-red-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative flex items-center justify-between">
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Modal</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalModal }}</p>
+                </div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/25 flex-shrink-0 ml-3">
+                    <i data-lucide="dollar-sign" class="h-6 w-6 sm:h-7 sm:w-7 text-white"></i>
+                </div>
+            </div>
+        </div>
 
         <div class="group relative bg-gradient-to-br from-purple-500/10 via-purple-600/5 to-transparent border border-purple-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -143,6 +169,77 @@
             </div>
         </div>
     </div>
+    <div>
+        <h3 class="text-base sm:text-lg font-semibold text-foreground">Statistik Penjualan</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-blue-500/10 via-blue-600/5 to-transparent border border-blue-500/20 rounded-xl hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Transaksi</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ $totalTransaksi }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-green-500/10 via-green-600/5 to-transparent border border-green-500/20 rounded-xl hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Produk Terjual</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ $totalobatterjual }} Pcs </p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-purple-500/10 via-purple-600/5 to-transparent border border-purple-500/20 rounded-xl hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Keuntungan Bulan Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($totalKeuntunganBulanIni) }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent border border-red-500/20 rounded-xl hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Modal Bulan Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($totalModalBulanIni) }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-indigo-500/10 via-indigo-600/5 to-transparent border border-indigo-500/20 rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Penjualan Bulan Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($totalPenjualanBulanIni) }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-yellow-500/10 via-yellow-600/5 to-transparent border border-yellow-500/20 rounded-xl hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Keuntungan Hari Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($totalKeuntunganHariIni) }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent border border-red-500/20 rounded-xl hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Modal Hari Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($totalModalHariIni) }}</p>
+            </div>
+            <div class="p-4 sm:p-6 bg-gradient-to-br from-indigo-500/10 via-indigo-600/5 to-transparent border border-indigo-500/20 rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+                <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Penjualan Hari Ini</p>
+                <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1">{{ formatRupiah($penjualanHariIni) }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-6">
+    <h3 class="text-lg font-semibold mb-4">Laporan Total Modal dan Penjualan per Obat</h3>
+    <div class="overflow-x-auto rounded-xl shadow-sm border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-3 text-left font-medium text-gray-700">No</th>
+                    <th class="px-4 py-3 text-left font-medium text-gray-700">Nama Obat</th>
+                    <th class="px-4 py-3 text-right font-medium text-gray-700">Total Modal</th>
+                    <th class="px-4 py-3 text-right font-medium text-gray-700">Total Penjualan</th>
+                    <th class="px-4 py-3 text-right font-medium text-gray-700">Keuntungan</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse ($totalModalperobat as $index => $obat)
+                    <tr class="hover:bg-gray-50 transition-all">
+                        <td class="px-4 py-2">{{ $index + 1 }}</td>
+                        <td class="px-4 py-2 font-medium text-gray-900">{{ $obat->obat->nama ?? '-' }}</td>
+                        <td class="px-4 py-2 text-right text-gray-700">{{ formatRupiah($obat->total_modal_per_obat) }}</td>
+                        <td class="px-4 py-2 text-right text-gray-700">{{ formatRupiah($obat->total_penjualan_per_obat) }}</td>
+                        <td class="px-4 py-2 text-right font-semibold text-green-600">
+                            {{ formatRupiah($obat->total_penjualan_per_obat - $obat->total_modal_per_obat) }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-4 py-3 text-center text-gray-500">Belum ada data transaksi</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 
     <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div class="flex items-center justify-between mb-4 sm:mb-6">

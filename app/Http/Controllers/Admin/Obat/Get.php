@@ -15,6 +15,7 @@ class Get extends Controller
         $search = $request->search ? $request->search :"";
         $obats = Obat::whereLike('nama', "%$search%")->orWhereLike('kode_barcode', "%$search%")->paginate(10);
         $obats->appends($request->query());
+        
 
         return view('admin.obat.index',compact('obats', 'search'));
     }

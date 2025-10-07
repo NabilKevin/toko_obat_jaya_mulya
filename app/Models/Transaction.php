@@ -10,12 +10,23 @@ class Transaction extends Model
     protected $table = 'transaction';
     public $timestamps = false;
 
-    public function items() 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'paid_at' => 'datetime',
+    ];
+
+    protected $appends = ['name', 'qty', 'kasir'];
+
+    public function items()
     {
         return $this->hasMany(TransactionItem::class, 'transaction_id', 'id');
     }
 
-    protected $appends = ['name', 'qty'];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function getNameAttribute()
     {
@@ -25,5 +36,10 @@ class Transaction extends Model
     public function getQtyAttribute()
     {
         return $this->items->sum('qty');
+    }
+
+    public function getKasirAttribute()
+    {
+        return $this->user ? $this->user->nama : '-';
     }
 }
