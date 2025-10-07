@@ -72,7 +72,7 @@ class Post extends Controller
       return response()->json([
         'status' => 'success',
         'message' => 'Berhasil membuat transaksi baru!',
-        'redirect_url' => route('kasir.cetak.struk', $transaksi->id),
+        'redirect_url' => route('kasir.cetak.struk', $transaksi->kode),
       ]);
     } catch (\Exception $e) {
       DB::rollBack();
@@ -83,11 +83,12 @@ class Post extends Controller
     }
   }
 
-  public function cetakStruk($id)
+  public function cetakStruk($kode)
   {
     // Pastikan relasi model sudah benar di model Transaction
-    $transaction = Transaction::with(['items.obat', 'user'])->findOrFail($id);
+    $transaction = Transaction::with(['items.obat', 'user'])->where('kode', $kode)->firstOrFail();
 
     return view('kasir.cetak.struk', compact('transaction'));
   }
+
 }

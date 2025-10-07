@@ -15,6 +15,7 @@
                 ['icon' => 'package', 'label' => 'Data Obat', 'route' => 'admin.obat'],
                 ['icon' => 'users', 'label' => 'Data User', 'route' => 'admin.user'],
                 ['icon' => 'file-text', 'label' => 'Data Transaksi', 'route' => 'admin.transaksi'],
+                ['icon' => 'bar-chart-2', 'label' => 'Laporan', 'route' => 'admin.laporan'],
             ];
         @endphp
 

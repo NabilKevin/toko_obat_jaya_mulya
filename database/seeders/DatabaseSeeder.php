@@ -21,44 +21,44 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        User::create([
-            'nama' => 'admin',
-            'username' => 'admin',
-            'role' => 'admin',
-            'password' => bcrypt('admin123'),
-        ]);
-        User::create([
-            'nama' => 'kasir',
-            'username' => 'kasir',
-            'role' => 'kasir',
-            'password' => bcrypt('kasir123'),
-        ]);
+        // User::create([
+        //     'nama' => 'admin',
+        //     'username' => 'admin',
+        //     'role' => 'admin',
+        //     'password' => bcrypt('admin123'),
+        // ]);
+        // User::create([
+        //     'nama' => 'kasir',
+        //     'username' => 'kasir',
+        //     'role' => 'kasir',
+        //     'password' => bcrypt('kasir123'),
+        // ]);
 
-        $dataTipeObat = ['bebas','bebas terbatas','keras','narkotika','psikotropika'];
+        // $dataTipeObat = ['bebas','bebas terbatas','keras','narkotika','psikotropika'];
 
-        foreach( $dataTipeObat as $value ) {
-            TipeObat::create([
-                "nama"=> $value,
-            ]);
-        }
+        // foreach( $dataTipeObat as $value ) {
+        //     TipeObat::create([
+        //         "nama"=> $value,
+        //     ]);
+        // }
 
         Obat::create([
             'kode_barcode' => '8994887014569',
             'nama' => 'Sarung tangan medis',
             'stok' => 1000,
             'tipe_id' => 1,
-            'harga_modal' => '',
-            'harga_jual' => '',
-            'expired_at' => '',
+            'harga_modal' => '2500',
+            'harga_jual' => '3000',
+            'expired_at' => '2025-12-31',
         ]);
-        Obat::create([
-            'kode_barcode' => '',
-            'nama' => '',
-            'stok' => '',
-            'tipe_id' => '',
-            'harga_modal' => '',
-            'harga_jual' => '',
-            'expired_at' => '',
-        ]);
+        // Obat::create([
+        //     'kode_barcode' => '',
+        //     'nama' => '',
+        //     'stok' => '',
+        //     'tipe_id' => '',
+        //     'harga_modal' => '',
+        //     'harga_jual' => '',
+        //     'expired_at' => '',
+        // ]);
     }
 }

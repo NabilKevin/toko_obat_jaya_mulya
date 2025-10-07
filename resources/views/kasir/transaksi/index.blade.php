@@ -104,6 +104,14 @@
     <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
       <div>
         <h3 id="trx-modal-title" class="text-base font-semibold">Detail Transaksi</h3>
+        <span id="trxi" class="hidden"></span>
+      </div>
+      <button data-modal-close class="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200">
+        <i data-lucide="x" class="h-4 w-4"></i>
+      </button>
+    </div>
+    <div class="px-4 pt-4 border-b border-neutral-200 dark:border-neutral-800">
+      <div class="space-y-1.5">
         <p id="trx-meta" class="text-xs text-muted-foreground">Kode transaksi: <span id="trxKode"></span></p>
         <p id="trx-meta" class="text-xs text-muted-foreground">Waktu: <span id="trxWaktu"></span></p>
       </div>

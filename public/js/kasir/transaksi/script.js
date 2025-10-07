@@ -48,3 +48,8 @@ modal.addEventListener('click', e => {
 buttons.forEach(button => {
   button.addEventListener('click', openModalTransaksi)
 })
+const btnPrint = document.getElementById('trx-print');
+btnPrint.addEventListener('click', () => {
+  const id = document.getElementById('trxKode').textContent;
+  window.open(`${BASE_URL}kasir/struk/${id}`, '_blank');
+});

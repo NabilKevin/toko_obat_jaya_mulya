@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-        // Total Keuntungan Bersih
+        {{-- Total Keuntungan Bersih --}}
         <div class="group relative bg-gradient-to-br from-green-500/10 via-green-600/5 to-transparent border border-green-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
             <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="relative flex items-center justify-between">
@@ -238,39 +238,7 @@
         </div>
     </div>
 
-    <div class="mt-6">
-    <h3 class="text-lg font-semibold mb-4">Laporan Total Modal dan Penjualan per Obat</h3>
-    <div class="overflow-x-auto rounded-xl shadow-sm border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-4 py-3 text-left font-medium text-gray-700">No</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-700">Nama Obat</th>
-                    <th class="px-4 py-3 text-right font-medium text-gray-700">Total Modal</th>
-                    <th class="px-4 py-3 text-right font-medium text-gray-700">Total Penjualan</th>
-                    <th class="px-4 py-3 text-right font-medium text-gray-700">Keuntungan</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse ($totalModalperobat as $index => $obat)
-                    <tr class="hover:bg-gray-50 transition-all">
-                        <td class="px-4 py-2">{{ $index + 1 }}</td>
-                        <td class="px-4 py-2 font-medium text-gray-900">{{ $obat->obat->nama ?? '-' }}</td>
-                        <td class="px-4 py-2 text-right text-gray-700">{{ formatRupiah($obat->total_modal_per_obat) }}</td>
-                        <td class="px-4 py-2 text-right text-gray-700">{{ formatRupiah($obat->total_penjualan_per_obat) }}</td>
-                        <td class="px-4 py-2 text-right font-semibold text-green-600">
-                            {{ formatRupiah($obat->total_penjualan_per_obat - $obat->total_modal_per_obat) }}
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-3 text-center text-gray-500">Belum ada data transaksi</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
+    
 
     <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl p-4 sm:p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div class="flex items-center justify-between mb-4 sm:mb-6">
