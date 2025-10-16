@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/user/{id}', [Admin\User\Delete::class, 'destroy'])->name('admin.user.delete');
 
             Route::get('/transaksi', [Admin\Transaksi\Get::class, 'index'])->name('admin.transaksi');
+            Route::get('/admin/struk/{kode}', [Admin\Transaksi\Get::class, 'cetakStruk'])->name('admin.cetak.struk');
 
             Route::get('/laporan', [Admin\Laporan\Get::class, 'index'])->name('admin.laporan');
         });
@@ -44,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/obat', [Kasir\Obat\Get::class, 'index'])->name('kasir.obat');
         Route::get('/obat/search', [Kasir\Obat\Get::class, 'search'])->name('kasir.obat.search');
         Route::get('/transaksi', [Kasir\Transaksi\Get::class, 'index'])->name('kasir.transaksi');
-        Route::get('/kasir/struk/{id}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
-        Route::post('/kasir/struk/{kode}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
+        // Route::get('/kasir/struk/{id}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
+        Route::get('/kasir/struk/{kode}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
     });
 });

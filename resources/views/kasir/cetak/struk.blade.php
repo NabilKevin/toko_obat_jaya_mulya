@@ -1,77 +1,27 @@
 @extends('kasir.layouts.app')
 
+@section('title', 'Struk - Kasir')
 @section('page-title', 'Struk')
 
 @section('content')
-<div class="flex justify-center py-8">
-    <div id="strukArea"
-        class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md w-[280px] text-sm print:w-full print:shadow-none print:p-0">
+    <div class="flex justify-center py-8">
+        <div id="strukArea"
+            class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md w-[280px] text-sm print:w-full print:shadow-none print:p-0">
 
-        {{-- === STYLE PRINT KHUSUS STRUK === --}}
-        <style>
-            @font-face {
-                font-family: 'DotMatrix';
-                src: local('Courier New'), local('Consolas'), monospace;
-            }
-
-            @media print {
-                @page {
-                    size: 58mm auto;
-                    margin: 0;
-                }
-
-                body {
-                    width: 52mm;
-                    margin: 0;
-                    padding: 0;
-                    background: #fff;
-                    font-family: 'DotMatrix', monospace;
-                    font-size: 10.2px; /* sedikit diperbesar agar lebih terbaca */
+            {{-- === STYLE STRUK === --}}
+            <style>
+                #strukArea {
+                    width: 250px;
+                    font-family: 'Courier New', monospace;
+                    font-size: 11px;
                     line-height: 1.3;
                     color: #000;
-                    font-weight: 900;
-                    letter-spacing: 0px;
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                    image-rendering: pixelated;
-                    -webkit-font-smoothing: none;
-                    -moz-osx-font-smoothing: grayscale;
-                    font-smooth: never;
-                    text-rendering: geometricPrecision;
-                    transform-origin: top left;
-                }
-
-                /* Hanya area struk yang dicetak */
-                body * {
-                    visibility: hidden;
-                }
-
-                #strukArea,
-                #strukArea * {
-                    visibility: visible;
-                }
-
-                #strukArea {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 52mm;
-                    padding: 2mm;
-                    background: #fff;
-                    transform: scale(0.96);
-                    transform-origin: top left;
-                    box-shadow: none;
-                    border: none;
-                }
-
-                .no-print {
-                    display: none !important;
                 }
 
                 table {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 10px;
+                    font-size: 11px;
                 }
 
                 td {
@@ -79,131 +29,305 @@
                     vertical-align: top;
                 }
 
-                /* Efek tajam dan tebal seperti printer kasir */
-                * {
-                    color: #000 !important;
-                    font-weight: 900 !important;
-                    text-shadow:
-                        0 0 0.6px #000,
-                        0 0 0.6px #000,
-                        0 0 0.6px #000;
-                }
-
-                /* Garis putus-putus */
                 .border-dashed {
                     border-top: 1px dashed #000 !important;
+                    margin: 4px 0;
                 }
 
-                /* Hilangkan warna dark mode */
-                .dark\:bg-gray-900 {
-                    background: #fff !important;
-                }
-
-                /* Rata tengah tajam */
                 .text-center {
                     text-align: center;
-                    letter-spacing: 0.15px;
                 }
+            </style>
 
-                /* Biar hasil tidak blur pada printer thermal */
-                img {
-                    image-rendering: pixelated;
-                }
-            }
-        </style>
+            {{-- === AREA STRUK === --}}
+            <div class="struk font-mono text-gray-800 dark:text-gray-100" id="struk">
+                <div class="text-center font-bold text-base">
+                    <div>Toko Obat Jaya Mulya</div>
+                    <div class="text-[11px] font-mono font-normal mt-1 leading-tight">
+                        Jl. Swadaya No.04 8, RT.8/RW.12, Jatinegara, Kec. Cakung,<br>
+                        Kota Jakarta Timur, DKI Jakarta 13930
+                    </div>
+                </div>
 
-        {{-- === AREA STRUK === --}}
-        <div class="struk font-mono text-gray-800 dark:text-gray-100">
-            <div class="text-center font-bold text-base">
-                <div>Toko Obat Jaya Mulya</div>
-                <div class="text-[11px] font-mono font-normal mt-1 leading-tight">
-                    Jl. Swadaya No.04 8, RT.8/RW.12, Jatinegara, Kec. Cakung,<br>
-                    Kota Jakarta Timur, DKI Jakarta 13930
+                <div class="border-dashed"></div>
+
+                {{-- Info Transaksi --}}
+                <table>
+                    <tr>
+                        <td>No. Transaksi</td>
+                        <td class="text-right">{{ $transaction->kode }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal</td>
+                        <td class="text-right">{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Kasir</td>
+                        <td class="text-right">{{ $transaction->kasir ?? 'Kasir' }}</td>
+                    </tr>
+                </table>
+
+                <div class="border-dashed"></div>
+
+                {{-- Detail Barang --}}
+                <table>
+                    @foreach ($transaction->items as $item)
+                        <tr>
+                            <td style="width: 60%;">{{ $item->obat->nama }}</td>
+                            <td style="width: 10%; text-align: center;">x{{ $item->qty }}</td>
+                            <td style="width: 30%; text-align: right;">{{ formatRupiah($item->subtotal) }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+
+                <div class="border-dashed"></div>
+
+                {{-- Total --}}
+                <table>
+                    <tr>
+                        <td>Total</td>
+                        <td class="text-right">{{ formatRupiah($transaction->total_transaksi) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tunai</td>
+                        <td class="text-right">{{ formatRupiah($transaction->total_dibayar) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Kembali</td>
+                        <td class="text-right">{{ formatRupiah($transaction->total_kembalian) }}</td>
+                    </tr>
+                </table>
+
+                <div class="border-dashed"></div>
+
+                {{-- Pesan --}}
+                <div class="text-center text-[10px]">
+                    <p>Terima Kasih!</p>
+                    <p>Semoga Lekas Sembuh</p>
+                </div>
+
+                <div class="border-dashed"></div>
+
+                <div class="text-center text-[9px] mt-2 italic">
+                    <p>Struk ini merupakan bukti pembayaran yang sah</p>
+                </div>
+
+                <div class="border-dashed"></div>
+
+                <div class="text-center text-[10px] mt-1 font-bold">
+                    <p>Powered by EasyFlow</p>
                 </div>
             </div>
 
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
+            {{-- === TOMBOL AKSI (TIDAK DICETAK) === --}}
+            <div class="no-print flex justify-center items-center gap-3 mt-6">
+                {{-- Tombol Print RawBT --}}
+                <button onclick="printRawBT()"
+                    class="px-4 py-1.5 bg-blue-500 text-white text-sm font-mono rounded-md hover:bg-blue-600 transition border border-blue-700">
+                    🖨️ Print RawBT
+                </button>
 
-            {{-- Info Transaksi --}}
-            <table class="w-full text-[10px] mb-1">
-                <tr>
-                    <td>No. Transaksi</td>
-                    <td class="text-right">{{ $transaction->kode }}</td>
-                </tr>
-                <tr>
-                    <td>Tanggal</td>
-                    <td class="text-right">{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}</td>
-                </tr>
-                <tr>
-                    <td>Kasir</td>
-                    <td class="text-right">{{ $transaction->kasir ?? 'Kasir' }}</td>
-                </tr>
-            </table>
+                {{-- Tombol Print Windows --}}
+                <button onclick="printWindow()"
+                    class="px-4 py-1.5 bg-indigo-500 text-white text-sm font-mono rounded-md hover:bg-indigo-600 transition border border-indigo-700">
+                    💻 Print Windows
+                </button>
 
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
-
-            {{-- Detail Barang --}}
-            <table class="w-full text-[10px]">
-                @foreach ($transaction->items as $item)
-                <tr>
-                    <td style="width: 60%;">{{ $item->obat->nama }}</td>
-                    <td style="width: 10%; text-align: center;">x{{ $item->qty }}</td>
-                    <td style="width: 30%; text-align: right;">{{ formatRupiah($item->subtotal) }}</td>
-                </tr>
-                @endforeach
-            </table>
-
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
-
-            {{-- Total --}}
-            <table class="w-full text-[10px]">
-                <tr>
-                    <td>Total</td>
-                    <td class="text-right">{{ formatRupiah($transaction->total_transaksi) }}</td>
-                </tr>
-                <tr>
-                    <td>Tunai</td>
-                    <td class="text-right">{{ formatRupiah($transaction->total_dibayar) }}</td>
-                </tr>
-                <tr>
-                    <td>Kembali</td>
-                    <td class="text-right">{{ formatRupiah($transaction->total_kembalian) }}</td>
-                </tr>
-            </table>
-
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
-
-            {{-- Pesan --}}
-            <div class="text-center text-[10px]">
-                <p>Terima Kasih!</p>
-                <p>Semoga Lekas Sembuh</p>
+                {{-- Tombol Kembali --}}
+                <a href="{{ route('kasir.transaksi') }}"
+                    class="px-4 py-1.5 bg-green-500 text-white text-sm font-mono rounded-md hover:bg-green-600 transition border border-green-700">
+                    ✅ Selesai
+                </a>
             </div>
 
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
 
-            <div class="text-center text-[9px] mt-2 italic">
-                <p>Struk ini merupakan bukti pembayaran yang sah</p>
-            </div>
-
-            <div class="border-t border-dashed border-gray-400 my-2"></div>
-
-            {{-- Powered by EasyFlow --}}
-            <div class="text-center text-[10px] mt-1 font-bold">
-                <p>Powered by EasyFlow</p>
-            </div>
-        </div>
-
-        {{-- === TOMBOL AKSI (TIDAK DICETAK) === --}}
-        <div class="no-print text-center mt-6 flex justify-center gap-3">
-            <button onclick="window.print()"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Print Struk
-            </button>
-            <a href="{{ route('kasir.transaksi') }}"
-                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                Selesai
-            </a>
         </div>
     </div>
-</div>
+
+    {{-- === SCRIPT RAWBT === --}}
+    <script>
+        function centerText(text, width = 36) {
+            text = text.trim();
+            if (text.length >= width) return text;
+            let left = Math.floor((width - text.length) / 2);
+            return ' '.repeat(left) + text;
+        }
+
+        function decodeHtml(str) {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
+        function getReceiptText(width = 36) {
+            const toko = "Toko Obat Jaya Mulya";
+            const alamat = [
+                "Jl. Swadaya No.04 8, RT.8/RW.12,",
+                "Jatinegara, Kec. Cakung,",
+                "Kota Jakarta Timur, DKI Jakarta 13930"
+            ];
+
+            const transaksi = {
+                kode: "{{ $transaction->kode }}",
+                tanggal: "{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}",
+                kasir: "{{ $transaction->kasir ?? 'Kasir' }}",
+                total: "{{ formatRupiah($transaction->total_transaksi) }}",
+                tunai: "{{ formatRupiah($transaction->total_dibayar) }}",
+                kembali: "{{ formatRupiah($transaction->total_kembalian) }}"
+            };
+
+            let header = "\n" + centerText(toko, width) + "\n";
+            alamat.forEach(line => header += centerText(line, width) + "\n");
+            header += "-".repeat(40);
+
+            // Daftar item
+            let items = "";
+            @foreach ($transaction->items as $item)
+                <?php
+                $nama = addslashes($item->obat->nama);
+                $qty = $item->qty;
+                $harga = formatRupiah($item->subtotal);
+                ?> {
+                    let nama = decodeHtml("{{ $nama }}");
+                    if (nama.length > (width - 12)) {
+                        items += nama + "\n";
+                        nama = "";
+                    }
+                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
+                        "     {{ $harga }}".padStart(9, ' ');
+                    items += line + "\n";
+                }
+            @endforeach
+
+            let footer = "";
+            footer += "-".repeat(40) + "\n";
+            footer += `Total   : ${transaksi.total}\n`;
+            footer += `Tunai   : ${transaksi.tunai}\n`;
+            footer += `Kembali : ${transaksi.kembali}\n`;
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Terima Kasih!", width) + "\n";
+            footer += centerText("Semoga Lekas Sembuh", width) + "\n";
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
+            footer += centerText("yang sah", width) + "\n";
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Powered by EasyFlow", width) + "\n";
+
+            return `${header}
+No.Transaksi : ${transaksi.kode}
+Tanggal      : ${transaksi.tanggal}
+Kasir        : ${transaksi.kasir}
+${"-".repeat(40)}
+${items}${footer}`;
+        }
+
+        function getReceiptTextWindow(width = 34) {
+            const toko = "Toko Obat Jaya Mulya";
+            const alamat = [
+                "Jl. Swadaya No.04 8, RT.8/RW.12,",
+                "Jatinegara, Kec. Cakung,",
+                "Kota Jakarta Timur, DKI Jakarta 13930"
+            ];
+
+            const transaksi = {
+                kode: "{{ $transaction->kode }}",
+                tanggal: "{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}",
+                kasir: "{{ $transaction->kasir ?? 'Kasir' }}",
+                total: "{{ formatRupiah($transaction->total_transaksi) }}",
+                tunai: "{{ formatRupiah($transaction->total_dibayar) }}",
+                kembali: "{{ formatRupiah($transaction->total_kembalian) }}"
+            };
+
+            let header = "\n" + centerText(toko, width) + "\n";
+            alamat.forEach(line => header += centerText(line, width) + "\n");
+            header += "-".repeat(40);
+
+            // Daftar item
+            let items = "";
+            @foreach ($transaction->items as $item)
+                <?php
+                $nama = addslashes($item->obat->nama);
+                $qty = $item->qty;
+                $harga = formatRupiah($item->subtotal);
+                ?> {
+                    let nama = decodeHtml("{{ $nama }}");
+                    if (nama.length > (width - 12)) {
+                        items += nama + "\n";
+                        nama = "";
+                    }
+                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
+                        "     {{ $harga }}".padStart(9, ' ');
+                    items += line + "\n";
+                }
+            @endforeach
+
+            let footer = "";
+            footer += "-".repeat(40) + "\n";
+            footer += `Total   : ${transaksi.total}\n`;
+            footer += `Tunai   : ${transaksi.tunai}\n`;
+            footer += `Kembali : ${transaksi.kembali}\n`;
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Terima Kasih!", width) + "\n";
+            footer += centerText("Semoga Lekas Sembuh", width) + "\n";
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
+            footer += centerText("yang sah", width) + "\n";
+            footer += "-".repeat(40) + "\n";
+            footer += centerText("Powered by EasyFlow", width) + "\n";
+
+            return `${header}
+No.Transaksi : ${transaksi.kode}
+Tanggal      : ${transaksi.tanggal}
+Kasir        : ${transaksi.kasir}
+${"-".repeat(40)}
+${items}${footer}`;
+        }
+
+        // ======================================================
+        // ✅ 1. Print ke RawBT di Android
+        // ======================================================
+        function printRawBT() {
+            const escposReset = "\x1B\x40";
+            const escposSmallFont = "\x1B\x4D\x01"; // gunakan font kecil agar 32 kolom muat
+            const strukText = escposReset + escposSmallFont + getReceiptText(32);
+            const encoded = encodeURIComponent(strukText);
+            window.location.href = "intent:" + encoded + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
+        }
+
+        // ======================================================
+        // ✅ 2. Print langsung di Browser (Laptop)
+        // ======================================================
+        function printWindow() {
+            // Ambil hasil teks struk dari fungsi getReceiptText()
+            const receipt = getReceiptTextWindow(34).replace(/\n/g, "<br>");
+
+
+            // Buat container sementara untuk tampilan print
+            const printArea = document.createElement("div");
+            printArea.innerHTML = `
+                <div style="width: 290px; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.3; color: #000;">
+                    ${receipt}
+                </div>
+            `;
+
+            // Simpan isi halaman asli
+            const originalContents = document.body.innerHTML;
+
+            // Ganti isi halaman dengan tampilan print
+            document.body.innerHTML = printArea.innerHTML;
+
+            // Jalankan dialog print browser
+            window.print();
+
+            // Setelah selesai print, kembalikan isi halaman semula
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+
+
+
+
+
+
 @endsection

@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard Admin - Toko Obat Jaya Mulya')</title>
+    <meta name="description" content="Dashboard Admin Toko Obat Jaya Mulya">
+    <meta name="keywords" content="toko obat, apotek, kesehatan, farmasi, obat, vitamin, suplemen, kesehatan tubuh">
+    <meta name="author"
+            content="Toko Obat Jaya Mulya">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
     
     <script src="https://cdn.tailwindcss.com"></script>

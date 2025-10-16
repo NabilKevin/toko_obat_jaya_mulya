@@ -156,5 +156,5 @@
 <script>
   const transaksis = @json($transaksis)?.['data']
 </script>
-<script src="{{ asset('js/kasir/transaksi/script.js') }}"></script>
+<script src="{{ asset('js/admin/transaksi/script.js') }}"></script>
 @endsection
