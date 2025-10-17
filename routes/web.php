@@ -35,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/admin/struk/{kode}', [Admin\Transaksi\Get::class, 'cetakStruk'])->name('admin.cetak.struk');
 
             Route::get('/laporan', [Admin\Laporan\Get::class, 'index'])->name('admin.laporan');
+            
+            Route::get('/struk/{kode}', [Admin\Transaksi\Post::class, 'cetakStruk'])->name('admin.cetak.struk');
         });
     });
     

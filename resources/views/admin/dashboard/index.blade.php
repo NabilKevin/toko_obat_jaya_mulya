@@ -126,7 +126,7 @@
                 <div class="relative flex items-center justify-between">
                     <div class="flex-1 min-w-0">
                         <p class="text-xs sm:text-sm text-muted-foreground font-medium">Total Modal</p>
-                        <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ $totalModal }}</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-foreground mt-1 truncate">{{ formatRupiah($totalModal) }}</p>
                     </div>
                     <div
                         class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/25 flex-shrink-0 ml-3">

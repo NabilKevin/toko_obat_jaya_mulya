@@ -3,6 +3,12 @@
 @section('title', 'Transaksi - Admin')
 
 @section('content')
+@if (session('error'))
+    <div
+        class="alert error absolute p-4 bg-red-700/50 text-red-500 border rounded-md border-red-600 text-center top-[12%] left-1/2 -translate-x-1/2 z-50 alertAnimate">
+        {{ session('error') ?? 'Error!' }}
+    </div>
+@endif
 <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
   <div class="p-3 flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
     <form method="GET" class="flex gap-2 w-full md:w-auto flex-col sm:flex-row">

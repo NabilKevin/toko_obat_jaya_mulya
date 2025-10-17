@@ -77,11 +77,7 @@
                                     <div class="min-w-0 flex-1">
                                         <h3 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 truncate">{{ $obat['nama'] }}</h3>
                                         <p class="text-sm text-slate-500 dark:text-slate-400">Barcode : {{ $obat['kode_barcode'] }}</p>
-<<<<<<< HEAD
                                         <p class="text-sm text-slate-500 dark:text-slate-400">Tipe : {{ $obat['tipe']['nama'] }}</p>
-=======
-                                        <p class="text-sm text-slate-500 dark:text-slate-400">Tipe : {{ $obat['tipe']['nama'] }}</p>
->>>>>>> 6882b1a (Menambahkan fitur print struk untuk android, perbaikan edit data obat, dashboard admin)
                                     </div>
                                 </div>
                                 <!-- Mobile-friendly action buttons with better spacing -->
