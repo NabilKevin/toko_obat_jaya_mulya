@@ -6,6 +6,7 @@ use App\Http\Controllers\Kasir;
 use App\Http\Controllers\Auth;
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isKasir;
+use App\Http\Controllers\LaporanController;
 
 Route::middleware('guest')->group(function () {
     Route::get("/login", [Auth\Get::class, 'index'])->name('login');
@@ -37,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/laporan', [Admin\Laporan\Get::class, 'index'])->name('admin.laporan');
             
             Route::get('/struk/{kode}', [Admin\Transaksi\Post::class, 'cetakStruk'])->name('admin.cetak.struk');
+            Route::get('/admin/transaksi/export', [Admin\Transaksi\Get::class, 'exportExcel'])->name('admin.transaksi.export');
+
         });
     });
     
@@ -46,8 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/pos', [Kasir\Pos\Post::class, 'bayar'])->name('kasir.pos.store');
         Route::get('/obat', [Kasir\Obat\Get::class, 'index'])->name('kasir.obat');
         Route::get('/obat/search', [Kasir\Obat\Get::class, 'search'])->name('kasir.obat.search');
-        Route::get('/transaksi', [Kasir\Transaksi\Get::class, 'index'])->name('kasir.transaksi');
+        Route::get('/kasir/transaksi', [Kasir\Transaksi\Get::class, 'index'])->name('kasir.transaksi');
         // Route::get('/kasir/struk/{id}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
         Route::get('/kasir/struk/{kode}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
+        Route::get('/kasir/transaksi/export', [Kasir\Transaksi\Get::class, 'exportExcel'])->name('kasir.transaksi.export');
     });
 });

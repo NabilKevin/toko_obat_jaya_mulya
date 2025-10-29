@@ -5,6 +5,7 @@ const trxTotalBayar = document.getElementById('trxTotalBayar');
 const trxTotalKembalian = document.getElementById('trxTotalKembalian');
 const trxKode = document.getElementById('trxKode');
 const trxWaktu = document.getElementById('trxWaktu');
+const trxKasir = document.getElementById('trxKasir');
 const buttons = document.querySelectorAll('.btn-detail');
 
 const openModalTransaksi = e => {
@@ -32,6 +33,7 @@ const openModalTransaksi = e => {
   trxTotalKembalian.textContent = `Rp ${formatNumber(transaksi.total_kembalian)}`
   trxKode.textContent = transaksi.kode
   trxWaktu.textContent = transaksi.created_at
+  trxKasir.textContent = transaksi.kasir
 
 }
 

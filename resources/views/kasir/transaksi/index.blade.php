@@ -5,13 +5,46 @@
 @section('content')
 <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
   <div class="p-3 flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
-    <form method="GET" class="flex gap-2 w-full md:w-auto flex-col sm:flex-row">
-      <input name="search" id="search" value="{{ $search }}" placeholder="Cari kode transaksi..." class="py-[0.725rem] flex-1 h-10 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 text-sm focus:ring-2 focus:ring-primary" />
-      <div class="flex items-center gap-2">
-        <button type="submit" class="grow py-2 px-4 rounded-md border border-neutral-200 dark:border-neutral-800 bg-gradient-to-r from-blue-600 to-blue-700 text-white active:scale-90 transition-all">Cari</button>
-        <button onclick="document.querySelector('#search').value = ''; input.closest('form').submit();" class="grow group py-2.5 px-3 relative border border-border text-foreground rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:-translate-y-0.5 active:scale-95">Reset</button>
-      </div>
-    </form>
+    <form method="GET" class="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto items-end">
+                <!-- Input pencarian -->
+                <div class="flex-1">
+                    <input name="search" id="search" value="{{ $search }}" placeholder="Cari kode transaksi..."
+                        class="py-[0.725rem] w-full h-10 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 text-sm focus:ring-2 focus:ring-primary" />
+                </div>
+
+                <!-- Filter rentang tanggal -->
+                <div class="flex gap-2">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}"
+                        class="h-10 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 text-sm" />
+                    <input type="date" name="end_date" value="{{ request('end_date') }}"
+                        class="h-10 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 text-sm" />
+                </div>
+
+                {{-- <!-- Filter cepat -->
+                <div>
+                    <select name="filter" onchange="this.form.submit()"
+                        class="h-10 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 text-sm">
+                        <option value="">-- Filter --</option>
+                        <option value="harian" {{ request('filter') == 'harian' ? 'selected' : '' }}>Harian</option>
+                        <option value="mingguan" {{ request('filter') == 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                        <option value="bulanan" {{ request('filter') == 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                    </select>
+                </div> --}}
+
+                <!-- Tombol Cari -->
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="py-2 px-4 rounded-md border border-neutral-200 dark:border-neutral-800 bg-gradient-to-r from-blue-600 to-blue-700 text-white active:scale-90 transition-all">
+                        Cari
+                    </button>
+
+                    <!-- Tombol Export Excel -->
+                    <a href="{{ route('kasir.transaksi.export', request()->query()) }}"
+                        class="py-2 px-4 rounded-md border border-neutral-200 dark:border-neutral-800 bg-gradient-to-r from-green-600 to-green-700 text-white active:scale-90 transition-all">
+                        📤 Export Excel
+                    </a>
+                </div>
+            </form>
   </div>
   <div class="overflow-x-auto">
     <table class="min-w-full text-sm p-2">
