@@ -57,27 +57,26 @@ class Get extends Controller
     }
     public function exportExcel(Request $request)
     {
-        $startDate = $request->start_date
-            ? Carbon::parse($request->start_date)->startOfDay()
-            : Carbon::now()->startOfDay();
-
-        $endDate = $request->end_date
-            ? Carbon::parse($request->end_date)->endOfDay()
-            : Carbon::now()->endOfDay();
+        $startDate = $request->start_date ? Carbon::parse($request->start_date)->startOfDay() : null;
+        $endDate   = $request->end_date ? Carbon::parse($request->end_date)->endOfDay() : null;
 
         // Query dasar
-        $query = Transaction::with(['items.obat', 'user'])
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderBy('created_at', 'desc');
+        $query = Transaction::with(['items.obat', 'user'])->orderBy('created_at', 'desc');
 
-        // Filter hanya transaksi milik kasir yang login
+        // Jika role kasir → hanya tampilkan transaksi milik kasir tersebut
         if (Auth::check() && Auth::user()->role === 'kasir') {
-            $query->where('user_id', Auth::user()->id);
+            $query->where('user_id', Auth::id());
         }
 
+        // Jika ada filter tanggal → tambahkan whereBetween
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        // Ambil semua data (jika tidak ada filter → semua data diexport)
         $transactions = $query->get();
 
-        // Buat spreadsheet
+        // Buat spreadsheet baru
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Laporan Transaksi');
@@ -86,6 +85,7 @@ class Get extends Controller
         $headers = ['No', 'Kode Transaksi', 'Tanggal', 'Kasir', 'Nama Obat', 'Qty', 'Modal', 'Total Jual', 'Keuntungan'];
         $sheet->fromArray($headers, null, 'A1');
 
+        // Isi data
         $row = 2;
         $no = 1;
         $totalModal = 0;
@@ -101,7 +101,7 @@ class Get extends Controller
                 $sheet->fromArray([
                     $no++,
                     $transaction->kode,
-                    $transaction->created_at->format('Y-m-d H:i'),
+                    $transaction->created_at ? $transaction->created_at->format('Y-m-d H:i') : '-',
                     $transaction->user->nama ?? '-',
                     $item->obat->nama ?? '-',
                     $item->qty,
@@ -117,26 +117,26 @@ class Get extends Controller
             }
         }
 
-        // Tambahkan total di bawah
+        // Tambahkan total di baris terakhir
         $sheet->setCellValue('F' . $row, 'TOTAL');
         $sheet->setCellValue('G' . $row, $totalModal);
         $sheet->setCellValue('H' . $row, $totalJual);
         $sheet->setCellValue('I' . $row, $totalUntung);
 
-        // Formatting
+        // Format header dan kolom
         $sheet->getStyle('A1:I1')->getFont()->setBold(true);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(20);
-        $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(30);
+        foreach (range('A', 'I') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
 
-        // Simpan file
+        // Simpan file sementara
         $fileName = 'Laporan_Transaksi_' . Carbon::now()->format('Ymd_His') . '.xlsx';
         $filePath = storage_path('app/public/' . $fileName);
 
         $writer = new Xlsx($spreadsheet);
         $writer->save($filePath);
 
+        // Download dan hapus setelah terkirim
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 }
