@@ -32,7 +32,8 @@ const openModalTransaksi = e => {
   trxTotalBayar.textContent = `Rp ${formatNumber(transaksi.total_dibayar)}`
   trxTotalKembalian.textContent = `Rp ${formatNumber(transaksi.total_kembalian)}`
   trxKode.textContent = transaksi.kode
-  trxWaktu.textContent = transaksi.created_at
+  //format tanggal waktu
+  trxWaktu.textContent = new Date(transaksi.created_at).toLocaleString()
   trxKasir.textContent = transaksi.kasir
 
 }

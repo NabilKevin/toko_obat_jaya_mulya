@@ -73,9 +73,15 @@
                 <table>
                     @foreach ($transaction->items as $item)
                         <tr>
-                            <td style="width: 60%;">{{ $item->obat->nama }}</td>
-                            <td style="width: 10%; text-align: center;">x{{ $item->qty }}</td>
-                            <td style="width: 30%; text-align: right;">{{ formatRupiah($item->subtotal) }}</td>
+                            <td colspan="3" class="font-bold">{{ $item->obat->nama }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="pl-2">
+                                {{ $item->qty }} x {{ formatRupiah($item->harga_jual) }}
+                            </td>
+                            <td class="text-right">
+                                {{ formatRupiah($item->subtotal) }}
+                            </td>
                         </tr>
                     @endforeach
                 </table>
@@ -186,18 +192,22 @@
                 <?php
                 $nama = addslashes($item->obat->nama);
                 $qty = $item->qty;
-                $harga = formatRupiah($item->subtotal);
+                $hargaSatuan = formatRupiah($item->harga_jual);
+                $subtotal = formatRupiah($item->subtotal);
                 ?> {
                     let nama = decodeHtml("{{ $nama }}");
-                    if (nama.length > (width - 12)) {
-                        items += nama + "\n";
-                        nama = "";
-                    }
-                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
-                        "     {{ $harga }}".padStart(9, ' ');
-                    items += line + "\n";
+
+                    // Nama obat (1 baris sendiri)
+                    items += nama + "\n";
+
+                    // Kolom tetap
+                    let kiri = `  {{ $qty }} x {{ $hargaSatuan }}`.padEnd(18, " ");
+                    let kanan = "{{ $subtotal }}".padStart(14, " ");
+
+                    items += kiri + kanan + "\n";
                 }
             @endforeach
+
 
             let footer = "";
             footer += "-".repeat(40) + "\n";
@@ -248,18 +258,22 @@ ${items}${footer}`;
                 <?php
                 $nama = addslashes($item->obat->nama);
                 $qty = $item->qty;
-                $harga = formatRupiah($item->subtotal);
+                $hargaSatuan = formatRupiah($item->harga_jual);
+                $subtotal = formatRupiah($item->subtotal);
                 ?> {
                     let nama = decodeHtml("{{ $nama }}");
-                    if (nama.length > (width - 12)) {
-                        items += nama + "\n";
-                        nama = "";
-                    }
-                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
-                        "     {{ $harga }}".padStart(9, ' ');
-                    items += line + "\n";
+
+                    // Nama obat (1 baris sendiri)
+                    items += nama + "\n";
+
+                    // Kolom tetap
+                    let kiri = `  {{ $qty }} x {{ $hargaSatuan }}`.padEnd(18, " ");
+                    let kanan = "{{ $subtotal }}".padStart(14, " ");
+
+                    items += kiri + kanan + "\n";
                 }
             @endforeach
+
 
             let footer = "";
             footer += "-".repeat(40) + "\n";

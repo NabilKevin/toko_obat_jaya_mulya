@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/obat/{id}/edit', [Admin\Obat\Get::class, 'edit'])->name('admin.obat.edit');
             Route::put('/obat/{id}', [Admin\Obat\Put::class, 'update'])->name('admin.obat.update');
             Route::delete('/obat/{id}', [Admin\Obat\Delete::class, 'destroy'])->name('admin.obat.delete');
+            Route::get('/obat/expired', [Admin\Obat\Post::class, 'expired'])->name('admin.obat.expired');
+            Route::get('/admin/obat/expired/export', [Admin\Obat\Get::class, 'exportExpired'])->name('admin.obat.expired.export');
 
             Route::get('/user', [Admin\User\Get::class, 'index'])->name('admin.user');
             Route::get('/user/create', [Admin\User\Get::class, 'create'])->name('admin.user.create');

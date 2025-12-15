@@ -28,12 +28,7 @@ class Put extends Controller
             }
         }
 
-        // Hapus field kosong agar tidak menimpa dengan null
-        $filtered = array_filter($data, function ($value) {
-            return !is_null($value) && $value !== '';
-        });
-
-        $obat->update($filtered);
+        $obat->update($data);
 
         return redirect()->route('admin.obat')->with('success', 'Obat berhasil diedit!');
     }

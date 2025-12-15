@@ -44,6 +44,10 @@ class Post extends Controller
         'total_kembalian' => $data['totalChange'],
         'status' => 'SUCCESS',
         'user_id' => Auth::id(),
+        //Gunakan waktu indonesia
+        'created_at' => now()->timezone('Asia/Jakarta'),
+        'updated_at' => now()->timezone('Asia/Jakarta'),
+        'paid_at' => now()->timezone('Asia/Jakarta'),
       ]);
 
       foreach ($data['cart'] as $value) {

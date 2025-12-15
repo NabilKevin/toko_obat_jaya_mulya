@@ -184,6 +184,21 @@ class Get extends Controller
         $totalObat = $obats->count();
         $totalStokMenipis = (clone $obats)->where('stok', '<', 10)->count();
         $totalUser = $users->count();
+        $today = Carbon::today();
+$h7 = Carbon::today()->addDays(7);
+$h30 = Carbon::today()->addDays(30);
+
+$totalExpired = Obat::whereNotNull('expired_at')
+    ->whereDate('expired_at', '<', $today)
+    ->count();
+
+$totalExpiredH7 = Obat::whereNotNull('expired_at')
+    ->whereBetween('expired_at', [$today, $h7])
+    ->count();
+
+$totalExpiredH30 = Obat::whereNotNull('expired_at')
+    ->whereBetween('expired_at', [$h7, $h30])
+    ->count();
 
         $dataSummary = $this->getDataSummary($obats, $users);
 
@@ -218,7 +233,9 @@ class Get extends Controller
             'totalModalHariIni' => $dataTransaksi['totalModalHariIni'] ?? 0,
             'totalPenjualanHariIni' => $dataTransaksi['totalPenjualanHariIni'] ?? 0,
 
-
+'totalExpired' => $totalExpired,
+    'totalExpiredH7' => $totalExpiredH7,
+    'totalExpiredH30' => $totalExpiredH30,
 
             'totalKenaikanObat' => $dataSummary['kenaikanObat'] ?? 0,
             'totalKenaikanUser' => $dataSummary['kenaikanUser'] < 0 ? 0 : $dataSummary['kenaikanUser'],

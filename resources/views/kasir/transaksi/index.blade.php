@@ -143,10 +143,11 @@
         <i data-lucide="x" class="h-4 w-4"></i>
       </button>
     </div>
-    <div class="px-4 pt-4 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="px-4 pt-4 pb-4 border-b border-neutral-200 dark:border-neutral-800">
       <div class="space-y-1.5">
         <p id="trx-meta" class="text-xs text-muted-foreground">Kode transaksi: <span id="trxKode"></span></p>
         <p id="trx-meta" class="text-xs text-muted-foreground">Waktu: <span id="trxWaktu"></span></p>
+        <p id="trx-meta" class="text-xs text-muted-foreground">Kasir: <span id="trxKasir"></span></p>
       </div>
     </div>
 

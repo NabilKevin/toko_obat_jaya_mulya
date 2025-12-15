@@ -99,6 +99,75 @@
                     </div>
                 </div>
             </div>
+
+            <div
+    class="group relative bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent border border-red-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+    <div
+        class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    </div>
+    <div class="relative flex items-center justify-between">
+        <div class="flex-1 min-w-0">
+            <p class="text-xs sm:text-sm text-muted-foreground font-medium">Obat Expired</p>
+            <p class="text-2xl sm:text-3xl font-bold text-red-600 mt-1">
+                {{ $totalExpired }}
+            </p>
+            <p class="text-xs text-red-500 mt-1 flex items-center">
+                <i data-lucide="alert-octagon" class="h-3 w-3 mr-1"></i>
+                Segera ditangani
+            </p>
+        </div>
+        <div
+            class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/25">
+            <i data-lucide="skull" class="h-6 w-6 text-white"></i>
+        </div>
+    </div>
+</div>
+
+<div
+    class="group relative bg-gradient-to-br from-orange-500/10 via-orange-600/5 to-transparent border border-orange-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+    <div
+        class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    </div>
+    <div class="relative flex items-center justify-between">
+        <div class="flex-1 min-w-0">
+            <p class="text-xs sm:text-sm text-muted-foreground font-medium">Expired H-7</p>
+            <p class="text-2xl sm:text-3xl font-bold text-orange-600 mt-1">
+                {{ $totalExpiredH7 }}
+            </p>
+            <p class="text-xs text-orange-500 mt-1 flex items-center">
+                <i data-lucide="clock" class="h-3 w-3 mr-1"></i>
+                7 hari ke depan
+            </p>
+        </div>
+        <div
+            class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/25">
+            <i data-lucide="hourglass" class="h-6 w-6 text-white"></i>
+        </div>
+    </div>
+</div>
+
+<div
+    class="group relative bg-gradient-to-br from-yellow-500/10 via-yellow-600/5 to-transparent border border-yellow-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
+    <div
+        class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    </div>
+    <div class="relative flex items-center justify-between">
+        <div class="flex-1 min-w-0">
+            <p class="text-xs sm:text-sm text-muted-foreground font-medium">Expired H-30</p>
+            <p class="text-2xl sm:text-3xl font-bold text-yellow-600 mt-1">
+                {{ $totalExpiredH30 }}
+            </p>
+            <p class="text-xs text-yellow-500 mt-1 flex items-center">
+                <i data-lucide="calendar" class="h-3 w-3 mr-1"></i>
+                30 hari ke depan
+            </p>
+        </div>
+        <div
+            class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/25">
+            <i data-lucide="calendar-days" class="h-6 w-6 text-white"></i>
+        </div>
+    </div>
+</div>
             {{-- Total Keuntungan Bersih --}}
             <div
                 class="group relative bg-gradient-to-br from-green-500/10 via-green-600/5 to-transparent border border-green-500/20 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-1 active:scale-95">
