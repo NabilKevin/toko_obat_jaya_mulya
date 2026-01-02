@@ -10,11 +10,21 @@ class Transaction extends Model
     protected $table = 'transaction';
     public $timestamps = false;
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'paid_at' => 'datetime',
+    protected $fillable = [
+        'kode',
+        'status',
+        'total_transaksi',
+        'total_dibayar',
+        'total_kembalian',
+        'void_reason',
+        'user_id',
+        'void_by'
     ];
+
+    
+
+    
+
 
     protected $appends = ['name', 'qty', 'kasir'];
 
@@ -23,6 +33,17 @@ class Transaction extends Model
         return $this->hasMany(TransactionItem::class, 'transaction_id', 'id');
     }
 
+    public function returns()
+{
+    return $this->hasMany(TransactionReturn::class);
+}
+/* ===============================
+     | VOID BY USER
+     =============================== */
+    public function voidBy()
+    {
+        return $this->belongsTo(User::class, 'void_by');
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

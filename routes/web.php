@@ -16,7 +16,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post("/logout", [Auth\Post::class, 'logout'])->name('logout');
     Route::middleware([isAdmin::class])->group(function () {
-        Route::prefix('admin')->group(function() {
+        Route::prefix('admin')->group(function () {
             Route::get('/', [Admin\Dashboard\Get::class, 'index'])->name('admin.dashboard');
             Route::get('/obat', [Admin\Obat\Get::class, 'index'])->name('admin.obat');
             Route::get('/obat/create', [Admin\Obat\Get::class, 'create'])->name('admin.obat.create');
@@ -33,18 +33,26 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/user/{id}/edit', [Admin\User\Get::class, 'edit'])->name('admin.user.edit');
             Route::put('/user/{id}', [Admin\User\Put::class, 'update'])->name('admin.user.update');
             Route::delete('/user/{id}', [Admin\User\Delete::class, 'destroy'])->name('admin.user.delete');
+            Route::get(
+                '/transaksi/profit',
+                [Admin\Transaksi\Get::class, 'profit']
+            )->name('admin.transaksi.profit');
 
             Route::get('/transaksi', [Admin\Transaksi\Get::class, 'index'])->name('admin.transaksi');
+            Route::post('/transaksi/{id}/void', [Admin\Transaksi\Post::class, 'void'])
+                ->name('transaksi.void');
+            Route::post(
+                '/transaksi/{transaction}/return',
+                [Admin\Transaksi\Post::class, 'store']
+            )->name('admin.transaksi.return');
             Route::get('/admin/struk/{kode}', [Admin\Transaksi\Get::class, 'cetakStruk'])->name('admin.cetak.struk');
-
-            Route::get('/laporan', [Admin\Laporan\Get::class, 'index'])->name('admin.laporan');
-            
             Route::get('/struk/{kode}', [Admin\Transaksi\Post::class, 'cetakStruk'])->name('admin.cetak.struk');
             Route::get('/admin/transaksi/export', [Admin\Transaksi\Get::class, 'exportExcel'])->name('admin.transaksi.export');
-
+            Route::get('/laporan', [Admin\Laporan\Get::class, 'laporan'])
+                ->name('admin.laporan');
         });
     });
-    
+
     Route::middleware([isKasir::class])->group(function () {
         Route::get('/', [Kasir\Dashboard\Get::class, 'index'])->name('kasir.dashboard');
         Route::get('/pos', [Kasir\Pos\Get::class, 'index'])->name('kasir.pos');
@@ -55,5 +63,12 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::get('/kasir/struk/{id}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
         Route::get('/kasir/struk/{kode}', [Kasir\Pos\Post::class, 'cetakStruk'])->name('kasir.cetak.struk');
         Route::get('/kasir/transaksi/export', [Kasir\Transaksi\Get::class, 'exportExcel'])->name('kasir.transaksi.export');
+        Route::post('/kasir/transaksi/{id}/void', [Kasir\Transaksi\Post::class, 'void'])
+            ->name('kasir.transaksi.void');
+        Route::post(
+            '/kasir/transaksi/{transaction}/return',
+            [Kasir\Transaksi\Post::class, 'store']
+        )->name('kasir.transaksi.return');
+        Route::get('/kasir/transaksi/profit', [Kasir\Transaksi\Get::class, 'profit'])->name('kasir.transaksi.profit');
     });
 });

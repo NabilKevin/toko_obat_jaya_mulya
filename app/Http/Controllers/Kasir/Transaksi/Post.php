@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Admin\Transaksi;
+namespace App\Http\Controllers\Kasir\Transaksi;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\Obat;
@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class Post extends Controller
 {
   public function cetakStruk($kode)
-  {
-    // Pastikan relasi model sudah benar di model Transaction
+{
     $transaction = Transaction::with([
         'items.obat',
         'user',
@@ -47,8 +46,9 @@ class Post extends Controller
     $transaction->total_return = $totalReturn;
     $transaction->total_final  = $transaction->total_transaksi - $totalReturn;
 
-    return view('admin.cetak.struk', compact('transaction'));
-  }
+    return view('kasir.cetak.struk', compact('transaction'));
+}
+
   public function store(Request $request, $transactionId)
 {
     $request->validate([

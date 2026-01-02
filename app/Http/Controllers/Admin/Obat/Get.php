@@ -13,14 +13,25 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Get extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->search ? $request->search : "";
-        $obats = Obat::whereLike('nama', "%$search%")->orWhereLike('kode_barcode', "%$search%")->paginate(10);
-        $obats->appends($request->query());
+{
+    $search = $request->search ?? "";
 
+    $obats = Obat::query()
+        ->when($request->stok === 'habis', function ($q) {
+            $q->where('stok', 0);
+        })
+        ->when($search, function ($q) use ($search) {
+            $q->where(function ($sub) use ($search) {
+                $sub->where('nama', 'like', "%{$search}%")
+                    ->orWhere('kode_barcode', 'like', "%{$search}%");
+            });
+        })
+        ->paginate(10)
+        ->appends($request->query());
 
-        return view('admin.obat.index', compact('obats', 'search'));
-    }
+    return view('admin.obat.index', compact('obats', 'search'));
+}
+
     public function create()
     {
         $tipeobat = TipeObat::all();

@@ -14,22 +14,33 @@ class Get extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search ?? '';
-        $filter = $request->filter ?? '';
+        $search    = $request->search;
         $startDate = $request->start_date;
-        $endDate = $request->end_date;
+        $endDate   = $request->end_date;
+        $status    = $request->status;
 
-        $query = Transaction::with(['items.obat', 'user'])
+        $query = Transaction::with([
+            // item transaksi
+            'items.obat',
+
+            // return
+            'returns',
+            'returns.item.obat',
+            'returns.user',
+
+            // void
+            'voidBy'
+        ])
             ->when($search, function ($q) use ($search) {
                 $q->where('kode', 'like', "%{$search}%");
+            })
+            ->when($status, function ($q) use ($status) {
+                $q->where('status', $status);
             });
-
-        // Filter hanya transaksi milik kasir yang login
         if (Auth::user() && Auth::user()->role === 'kasir') {
             $query->where('user_id', Auth::user()->id);
         }
 
-        // Filter rentang tanggal manual
         if ($startDate && $endDate) {
             $query->whereBetween('created_at', [
                 $startDate . ' 00:00:00',
@@ -37,24 +48,21 @@ class Get extends Controller
             ]);
         }
 
-        // Jika nanti mau aktifkan filter cepat (harian/mingguan/bulanan), bisa buka lagi bagian ini
-        /*
-    if ($filter === 'harian') {
-        $query->whereDate('created_at', now());
-    } elseif ($filter === 'mingguan') {
-        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
-    } elseif ($filter === 'bulanan') {
-        $query->whereMonth('created_at', now()->month)
-              ->whereYear('created_at', now()->year);
-    }
-    */
+        $transaksis = $query
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
 
-        // Urutkan dari transaksi terbaru
-        $transaksis = $query->orderBy('id', 'desc')->paginate(10);
-        $transaksis->appends($request->query());
-
-        return view('kasir.transaksi.index', compact('transaksis', 'search'));
+        return view('kasir.transaksi.index', compact(
+            'transaksis',
+            'search',
+            'startDate',
+            'endDate',
+            'status'
+        ));
     }
+
+
     public function exportExcel(Request $request)
     {
         $startDate = $request->start_date ? Carbon::parse($request->start_date)->startOfDay() : null;
@@ -63,9 +71,8 @@ class Get extends Controller
         // Query dasar
         $query = Transaction::with(['items.obat', 'user'])->orderBy('created_at', 'desc');
 
-        // Jika role kasir → hanya tampilkan transaksi milik kasir tersebut
-        if (Auth::check() && Auth::user()->role === 'kasir') {
-            $query->where('user_id', Auth::id());
+        if (Auth::user() && Auth::user()->role === 'kasir') {
+            $query->where('user_id', Auth::user()->id);
         }
 
         // Jika ada filter tanggal → tambahkan whereBetween
@@ -93,18 +100,27 @@ class Get extends Controller
         $totalUntung = 0;
 
         foreach ($transactions as $transaction) {
+
+            if ($transaction->status === 'VOID') {
+                continue;
+            }
+
             foreach ($transaction->items as $item) {
-                $modal = $item->harga_modal * $item->qty;
-                $jual = $item->harga_jual * $item->qty;
+
+                $qtyNet = $item->qty - $item->returned_qty;
+                if ($qtyNet <= 0) continue;
+
+                $modal = $item->harga_modal * $qtyNet;
+                $jual  = $item->harga_jual * $qtyNet;
                 $untung = $jual - $modal;
 
                 $sheet->fromArray([
                     $no++,
                     $transaction->kode,
-                    $transaction->created_at ? $transaction->created_at->format('Y-m-d H:i') : '-',
+                    optional($transaction->created_at)->format('Y-m-d H:i'),
                     $transaction->user->nama ?? '-',
                     $item->obat->nama ?? '-',
-                    $item->qty,
+                    $qtyNet,
                     $modal,
                     $jual,
                     $untung
@@ -139,4 +155,105 @@ class Get extends Controller
         // Download dan hapus setelah terkirim
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
+
+    public function cetakStruk($kode)
+{
+    $transaction = Transaction::with([
+        'items.obat',
+        'user',
+        'returns', // ⬅️ cukup ini
+    ])->where('kode', $kode)->firstOrFail();
+
+    // 🔁 Mapping return per transaction_item
+    $returnedQtyMap = [];
+    $totalReturn = 0;
+
+    foreach ($transaction->returns as $ret) {
+        $totalReturn += $ret->amount;
+
+        if (!isset($returnedQtyMap[$ret->transaction_item_id])) {
+            $returnedQtyMap[$ret->transaction_item_id] = 0;
+        }
+
+        $returnedQtyMap[$ret->transaction_item_id] += $ret->qty;
+    }
+
+    // 🔢 Hitung ulang qty & subtotal setelah return
+    foreach ($transaction->items as $item) {
+        $returnedQty = $returnedQtyMap[$item->id] ?? 0;
+
+        $item->qty_return = $returnedQty;
+        $item->qty_final  = $item->qty - $returnedQty;
+        $item->subtotal_final = $item->qty_final * $item->harga_jual;
+        $item->subtotal_return = $returnedQty * $item->harga_jual;
+    }
+
+    // 💰 Total akhir setelah return
+    $transaction->total_return = $totalReturn;
+    $transaction->total_final  = $transaction->total_transaksi - $totalReturn;
+
+    return view('kasir.cetak.struk', compact('transaction'));
 }
+
+    public function profit(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : null;
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : null;
+
+        $query = Transaction::with('items')
+            ->whereIn('status', ['SUCCESS', 'RETURN']); // ⬅️ penting
+        if (Auth::user() && Auth::user()->role === 'kasir') {
+            $query->where('user_id', Auth::user()->id);
+        }
+        // Filter tanggal
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        // Filter search kode transaksi
+        if ($request->search) {
+            $query->where('kode', 'like', "%{$request->search}%");
+        }
+
+        $transactions = $query->get();
+
+        $totalModal = 0;
+        $totalJual  = 0;
+
+        foreach ($transactions as $transaction) {
+            foreach ($transaction->items as $item) {
+
+                // Qty bersih setelah return
+                $netQty = $item->qty - ($item->returned_qty ?? 0);
+
+                if ($netQty <= 0) {
+                    continue; // item fully returned
+                }
+
+                $totalModal += $item->harga_modal * $netQty;
+                $totalJual  += $item->harga_jual  * $netQty;
+            }
+        }
+
+        $keuntungan = $totalJual - $totalModal;
+        $margin = $totalJual > 0
+            ? round(($keuntungan / $totalJual) * 100, 2)
+            : 0;
+
+        return response()->json([
+            'total_jual'   => $totalJual,
+            'total_modal'  => $totalModal,
+            'keuntungan'   => $keuntungan,
+            'margin'       => $margin,
+        ]);
+    }
+}
+// Filter hanya transaksi milik kasir yang login
+        // if (Auth::user() && Auth::user()->role === 'kasir') {
+        //     $query->where('user_id', Auth::user()->id);
+        // }

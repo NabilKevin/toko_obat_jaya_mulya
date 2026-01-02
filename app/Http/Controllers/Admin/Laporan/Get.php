@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin\Laporan;
+
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
 use App\Models\Transaksi;
@@ -8,92 +9,140 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\TransactionItem;
+use App\Models\Transaction;
 use App\Models\User;
 
 class Get extends Controller
 {
     private function getDataTransaksi($transaksis)
-    {
-        $transaksi = (clone $transaksis)->take(3)->get();
+{
+    $items = (clone $transaksis)->get();
 
-        $penjualanHariIni = (clone $transaksis)->whereDate('created_at', Carbon::today())->sum('subtotal');
-        $penjualanKemarin = (clone $transaksis)->whereDate('created_at', Carbon::yesterday())->sum('subtotal');
+    $penjualanHariIni = 0;
+    $penjualanKemarin = 0;
+    $totalModal = 0;
+    $totalPenjualan = 0;
+    $totalobatterjual = 0;
 
-        $totalobatterjual = (clone $transaksis)->count();
+    $today = Carbon::today();
+    $yesterday = Carbon::yesterday();
 
-        $totalModal = (clone $transaksis)->sum(DB::raw('harga_modal * qty'));
-        $totalPenjualan = (clone $transaksis)->sum('subtotal');
-        $totalKeuntungan = $totalPenjualan - $totalModal;
+    foreach ($items as $item) {
 
-        $startThisMonth = Carbon::now()->startOfMonth();
-        $endThisMonth = Carbon::now()->endOfMonth();
-        $startLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endLastMonth = Carbon::now()->subMonth()->endOfMonth();
-
-        $totalModalHariIni = (clone $transaksis)->whereDate('created_at', Carbon::today())->sum(DB::raw('harga_modal * qty'));
-        $totalModalBulanIni = (clone $transaksis)->whereBetween('created_at', [$startThisMonth, $endThisMonth])->sum(DB::raw('harga_modal * qty'));
-        $totalPenjualanBulanIni = (clone $transaksis)->whereBetween('created_at', [$startThisMonth, $endThisMonth])->sum('subtotal');
-        $totalKeuntunganBulanIni = $totalPenjualanBulanIni - $totalModalBulanIni;
-
-        $totalModalBulanLalu = (clone $transaksis)->whereBetween('created_at', [$startLastMonth, $endLastMonth])->sum(DB::raw('harga_modal * qty'));
-        $totalPenjualanBulanLalu = (clone $transaksis)->whereBetween('created_at', [$startLastMonth, $endLastMonth])->sum('subtotal');
-        $totalKeuntunganBulanLalu = $totalPenjualanBulanLalu - $totalModalBulanLalu;
-
-        $totalmodalperobat = (clone $transaksis)
-            ->select(
-                'obat_id',
-                DB::raw('SUM(harga_modal * qty) as total_modal_per_obat'),
-                DB::raw('SUM(subtotal) as total_penjualan_per_obat')
-            )
-            ->groupBy('obat_id')
-            ->with('obat')
-            ->get();
-
-        // $totalKeuntunganBulanIni = $totalPenjualanBulanIni - $totalModalBulanIni
-        $totalKeuntunganHariIni = $penjualanHariIni - $totalModalHariIni;
-        // hitung persentase kenaikan penjualan
-        $totalKenaikanPenjualan = 0;
-        if ($penjualanKemarin == 0 && $penjualanHariIni > 0) {
-            $totalKenaikanPenjualan = 100;
-        } elseif ($penjualanKemarin == 0 && $penjualanHariIni == 0) {
-            $totalKenaikanPenjualan = 0;
-        } else {
-            $totalKenaikanPenjualan = ceil(($penjualanHariIni - $penjualanKemarin) / ($penjualanKemarin > 0 ? $penjualanKemarin : 1) * 100);
+        // safety check status
+        if (!in_array($item->transaction->status, ['SUCCESS', 'RETURN'])) {
+            continue;
         }
-        // data untuk chart penjualan 7 hari terakhir
-        $totalTransaksi = (clone $transaksis)->count();
-        if ($totalTransaksi < 7) {
-            $days = $totalTransaksi;
-        } else {
-            $days = 7;
-        }
-        // ambil data penjualan per hari selama 7 hari terakhir
 
-        return [
-            'transaksi' => $transaksi,
-            'penjualanHariIni' => $penjualanHariIni,
-            'kenaikanPenjualan' => $totalKenaikanPenjualan,
-            'totalobatterjual' => $totalobatterjual,
-            'totalModal' => $totalModal,
-            'totalPenjualan' => $totalPenjualan,
-            'totalKeuntungan' => $totalKeuntungan,
-            'totalModalBulanIni' => $totalModalBulanIni,
-            'totalPenjualanBulanIni' => $totalPenjualanBulanIni,
-            'totalKeuntunganBulanIni' => $totalKeuntunganBulanIni,
-            'totalModalBulanLalu' => $totalModalBulanLalu,
-            'totalPenjualanBulanLalu' => $totalPenjualanBulanLalu,
-            'totalKeuntunganBulanLalu' => $totalKeuntunganBulanLalu,
-            'totalmodalperobat' => $totalmodalperobat,
-            'totalTransaksi' => $totalTransaksi,
-            'days' => $days,
-            'totalKenaikanPenjualan' => $totalKenaikanPenjualan,
-            'totalKeuntunganHariIni' => $totalKeuntunganHariIni,
-            'totalModalHariIni' => $totalModalHariIni,
-            'totalPenjualanHariIni' => $penjualanHariIni,
-        ];
+        $netQty = max($item->qty - ($item->returned_qty ?? 0), 0);
+        if ($netQty <= 0) continue;
+
+        $penjualan = $item->harga_jual * $netQty;
+        $modal = $item->harga_modal * $netQty;
+
+        $totalPenjualan += $penjualan;
+        $totalModal += $modal;
+        $totalobatterjual += $netQty;
+
+        if ($item->transaction->created_at->isSameDay($today)) {
+            $penjualanHariIni += $penjualan;
+        }
+
+        if ($item->transaction->created_at->isSameDay($yesterday)) {
+            $penjualanKemarin += $penjualan;
+        }
     }
 
-    
+    $totalKeuntungan = $totalPenjualan - $totalModal;
+
+    /** ================= BULANAN ================= */
+    $startThisMonth = Carbon::now()->startOfMonth();
+    $endThisMonth = Carbon::now()->endOfMonth();
+    $startLastMonth = Carbon::now()->subMonth()->startOfMonth();
+    $endLastMonth = Carbon::now()->subMonth()->endOfMonth();
+
+    $totalPenjualanBulanIni = 0;
+    $totalModalBulanIni = 0;
+    $totalPenjualanBulanLalu = 0;
+    $totalModalBulanLalu = 0;
+
+    foreach ($items as $item) {
+
+        if (!in_array($item->transaction->status, ['SUCCESS', 'RETURN'])) {
+            continue;
+        }
+
+        $netQty = max($item->qty - ($item->returned_qty ?? 0), 0);
+        if ($netQty <= 0) continue;
+
+        $jual = $item->harga_jual * $netQty;
+        $modal = $item->harga_modal * $netQty;
+        $created = $item->transaction->created_at;
+
+        if ($created->between($startThisMonth, $endThisMonth)) {
+            $totalPenjualanBulanIni += $jual;
+            $totalModalBulanIni += $modal;
+        }
+
+        if ($created->between($startLastMonth, $endLastMonth)) {
+            $totalPenjualanBulanLalu += $jual;
+            $totalModalBulanLalu += $modal;
+        }
+    }
+
+    $totalKeuntunganBulanIni = $totalPenjualanBulanIni - $totalModalBulanIni;
+    $totalKeuntunganBulanLalu = $totalPenjualanBulanLalu - $totalModalBulanLalu;
+
+    /** ================= KENAIKAN ================= */
+    if ($penjualanKemarin == 0 && $penjualanHariIni > 0) {
+        $totalKenaikanPenjualan = 100;
+    } elseif ($penjualanKemarin == 0) {
+        $totalKenaikanPenjualan = 0;
+    } else {
+        $totalKenaikanPenjualan = round(
+            (($penjualanHariIni - $penjualanKemarin) / $penjualanKemarin) * 100,
+            2
+        );
+    }
+
+    return [
+        'penjualanHariIni' => $penjualanHariIni,
+        'totalobatterjual' => $totalobatterjual,
+        'totalModal' => $totalModal,
+        'totalPenjualan' => $totalPenjualan,
+        'totalKeuntungan' => $totalKeuntungan,
+
+        'totalModalBulanIni' => $totalModalBulanIni,
+        'totalPenjualanBulanIni' => $totalPenjualanBulanIni,
+        'totalKeuntunganBulanIni' => $totalKeuntunganBulanIni,
+
+        'totalModalBulanLalu' => $totalModalBulanLalu,
+        'totalPenjualanBulanLalu' => $totalPenjualanBulanLalu,
+        'totalKeuntunganBulanLalu' => $totalKeuntunganBulanLalu,
+
+        'totalKenaikanPenjualan' => $totalKenaikanPenjualan,
+        'totalTransaksi' => $items->groupBy('transaction_id')->count(),
+    ];
+}
+
+
+    private function hitungPenjualanByTanggal($query, $date)
+    {
+        $items = (clone $query)
+            ->whereDate('transaction.created_at', $date)
+            ->get();
+
+        $total = 0;
+
+        foreach ($items as $item) {
+            $netQty = max($item->qty - ($item->returned_qty ?? 0), 0);
+            $total += $item->harga_jual * $netQty;
+        }
+
+        return $total;
+    }
+
+
     public function index()
     {
         $obats = Obat::all();
@@ -107,6 +156,7 @@ class Get extends Controller
 
         $transaksis = TransactionItem::select('transactionitem.*')
             ->join('transaction', 'transactionitem.transaction_id', '=', 'transaction.id')
+            ->whereIn('transaction.status', ['SUCCESS', 'RETURN'])
             ->orderBy('transaction.created_at', 'desc')
             ->with(['obat', 'transaction']);
 
@@ -114,7 +164,7 @@ class Get extends Controller
 
         // $dataChart = $this->getDataChart($transaksis);
 
-        return view('admin.laporan.index', [
+        return view('admin.dashboard.index', [
             'totalObat' => $totalObat,
             'totalStokMenipis' => $totalStokMenipis,
             'totalUser' => $totalUser,
@@ -142,5 +192,79 @@ class Get extends Controller
             'totalKenaikanPenjualan' => $dataTransaksi['kenaikanPenjualan'],
 
         ]);
+    }
+
+    public function laporan(Request $request)
+    {
+        $startDate = $request->filled('start_date')
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : null;
+
+        $endDate = $request->filled('end_date')
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : null;
+
+        $transactionQuery = Transaction::query();
+
+        if ($startDate && $endDate) {
+            $transactionQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if ($request->status) {
+            $transactionQuery->where('status', $request->status);
+        }
+
+        /** =========================
+         *  RINGKASAN STATUS
+         *  ========================= */
+        $totalTransaksi = (clone $transactionQuery)->count();
+        $totalSuccess   = (clone $transactionQuery)->where('status', 'SUCCESS')->count();
+        $totalVoid      = (clone $transactionQuery)->where('status', 'VOID')->count();
+        $totalReturn    = (clone $transactionQuery)->where('status', 'RETURN')->count();
+
+        /** =========================
+         *  KEUANGAN (SUCCESS + RETURN)
+         *  ========================= */
+        $transactions = (clone $transactionQuery)
+            ->whereIn('status', ['SUCCESS', 'RETURN'])
+            ->with('items')
+            ->get();
+
+        $totalJual = 0;
+        $totalModal = 0;
+
+        foreach ($transactions as $trx) {
+            foreach ($trx->items as $item) {
+                $netQty = max($item->qty - ($item->returned_qty ?? 0), 0);
+                if ($netQty === 0) continue;
+
+                $totalJual  += $item->harga_jual * $netQty;
+                $totalModal += $item->harga_modal * $netQty;
+            }
+        }
+
+        $keuntungan = $totalJual - $totalModal;
+        $margin = $totalJual > 0 ? round(($keuntungan / $totalJual) * 100, 2) : 0;
+
+        /** =========================
+         *  TABEL TRANSAKSI
+         *  ========================= */
+        $transaksis = (clone $transactionQuery)
+            ->with(['user', 'items'])
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.laporan.index', compact(
+            'totalTransaksi',
+            'totalSuccess',
+            'totalVoid',
+            'totalReturn',
+            'totalJual',
+            'totalModal',
+            'keuntungan',
+            'margin',
+            'transaksis'
+        ));
     }
 }
