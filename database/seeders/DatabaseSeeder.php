@@ -42,15 +42,15 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Obat::create([
-        //     'kode_barcode' => '8994887014569',
-        //     'nama' => 'Sarung tangan medis',
-        //     'stok' => 1000,
-        //     'tipe_id' => 1,
-        //     'harga_modal' => '2500',
-        //     'harga_jual' => '3000',
-        //     'expired_at' => '2025-12-31',
-        // ]);
+        Obat::create([
+            'kode_barcode' => '8994887014569',
+            'nama' => 'Sarung tangan medis',
+            'stok' => 1000,
+            'tipe_id' => 1,
+            'harga_modal' => '2500',
+            'harga_jual' => '3000',
+            'expired_at' => '2025-12-31',
+        ]);
         // Obat::create([
         //     'kode_barcode' => '',
         //     'nama' => '',
