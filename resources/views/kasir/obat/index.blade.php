@@ -32,6 +32,11 @@
                     <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"></i>
                 </div>
                 <div class="flex items-center space-x-2">
+                    <button type="submit" name="stok" value="habis"
+                            class="grow group relative bg-red-100 hover:bg-red-200 border border-red-300 text-red-700 px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
+                            <span class="hidden sm:inline">Cek Stok Habis</span>
+                            <i data-lucide="alert-triangle" class="inline sm:hidden"></i>
+                        </button>
                     <button type="submit" class="grow group relative bg-muted hover:bg-muted/80 border border-border text-foreground px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center font-semibold text-sm transform hover:scale-105 hover:-translate-y-0.5 min-h-[48px] active:scale-95">
                         <span class="hidden sm:inline relative z-10">Cari</span>
                         <i data-lucide="search" class="inline sm:hidden relative z-10"></i>
@@ -56,9 +61,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 @foreach($obats as $obat)
                     @php
-                        $stockStatus = $obat['stok'] < 50 ? ['label' => 'Stok Rendah', 'class' => 'bg-red-500/10 text-red-500'] :
-                                      ($obat['stok'] < 100 ? ['label' => 'Stok Sedang', 'class' => 'bg-yellow-500/10 text-yellow-500'] :
-                                      ['label' => 'Stok Aman', 'class' => 'bg-green-500/10 text-green-500']);
+                        $stockStatus =
+                                $obat['stok'] == 0
+                                    ? ['label' => 'STOK HABIS', 'class' => 'bg-red-600/20 text-red-600']
+                                    : ($obat['stok'] < 50
+                                        ? ['label' => 'Stok Rendah', 'class' => 'bg-red-500/10 text-red-500']
+                                        : ($obat['stok'] < 100
+                                            ? ['label' => 'Stok Sedang', 'class' => 'bg-yellow-500/10 text-yellow-500']
+                                            : ['label' => 'Stok Aman', 'class' => 'bg-green-500/10 text-green-500']));
                     @endphp
 
                     <!-- Mobile-optimized card with better touch targets -->

@@ -72,11 +72,24 @@
                 {{-- Detail Barang --}}
                 <table>
                     @foreach ($transaction->items as $item)
-                        <tr>
-                            <td style="width: 60%;">{{ $item->obat->nama }}</td>
-                            <td style="width: 10%; text-align: center;">x{{ $item->qty }}</td>
-                            <td style="width: 30%; text-align: right;">{{ formatRupiah($item->subtotal) }}</td>
-                        </tr>
+                        @if ($item->qty_final > 0)
+                            <tr>
+                                <td colspan="3" class="font-bold">{{ $item->obat->nama }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="pl-2">
+                                    {{ $item->qty_final }} x {{ formatRupiah($item->harga_jual) }}
+                                    @if ($item->qty_return > 0)
+                                        <div class="text-[9px] italic text-red-600">
+                                            Return {{ $item->qty_return }} : - {{ formatRupiah($item->subtotal_return) }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="text-right">
+                                    {{ formatRupiah($item->subtotal_final) }}
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </table>
 
@@ -86,8 +99,17 @@
                 <table>
                     <tr>
                         <td>Total</td>
-                        <td class="text-right">{{ formatRupiah($transaction->total_transaksi) }}</td>
+                        <td class="text-right">{{ formatRupiah($transaction->total_final) }}</td>
                     </tr>
+
+                    @if ($transaction->total_return > 0)
+                        <tr>
+                            <td>Return</td>
+                            <td class="text-right text-red-600">
+                                -{{ formatRupiah($transaction->total_return) }}
+                            </td>
+                        </tr>
+                    @endif
                     <tr>
                         <td>Tunai</td>
                         <td class="text-right">{{ formatRupiah($transaction->total_dibayar) }}</td>
@@ -171,7 +193,8 @@
                 kode: "{{ $transaction->kode }}",
                 tanggal: "{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}",
                 kasir: "{{ $transaction->kasir ?? 'Kasir' }}",
-                total: "{{ formatRupiah($transaction->total_transaksi) }}",
+                total: "{{ formatRupiah($transaction->total_final) }}",
+                return: "{{ formatRupiah($transaction->total_return) }}",
                 tunai: "{{ formatRupiah($transaction->total_dibayar) }}",
                 kembali: "{{ formatRupiah($transaction->total_kembalian) }}"
             };
@@ -183,145 +206,173 @@
             // Daftar item
             let items = "";
             @foreach ($transaction->items as $item)
-                <?php
-                $nama = addslashes($item->obat->nama);
-                $qty = $item->qty;
-                $harga = formatRupiah($item->subtotal);
-                ?> {
-                    let nama = decodeHtml("{{ $nama }}");
-                    if (nama.length > (width - 12)) {
+                @if ($item->qty_final > 0)
+                    <?php
+                    $nama = addslashes($item->obat->nama);
+                    $qty = $item->qty_final;
+                    $hargaSatuan = formatRupiah($item->harga_jual);
+                    $subtotal = formatRupiah($item->subtotal_final);
+                    $returnQty = $item->qty_return;
+                    ?> {
+                        let nama = decodeHtml("{{ $nama }}");
+
+                        // Nama obat (1 baris sendiri)
                         items += nama + "\n";
-                        nama = "";
+
+                        // Kolom tetap
+                        let kiri = `  {{ $qty }} x {{ $hargaSatuan }}`.padEnd(18, " ");
+                        let kanan = "{{ $subtotal }}".padStart(14, " ");
+
+                        items += kiri + kanan + "\n";
+                        if ({{ $returnQty }} > 0) {
+                            items += "  Return {{ $returnQty }}\n";
+                        }
                     }
-                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
-                        "     {{ $harga }}".padStart(9, ' ');
-                    items += line + "\n";
+                @endif
+                @endforeach
+
+
+                let footer = "";
+                footer += "-".repeat(40) + "\n";
+                footer += `Total   : ${transaksi.total}\n`;
+                footer += `Tunai   : ${transaksi.tunai}\n`;
+                footer += `Kembali : ${transaksi.kembali}\n`;
+                if (parseInt("{{ $transaction->total_return }}") > 0) {
+                    footer += `Return  : -${transaksi.return}\n`;
                 }
-            @endforeach
+                footer += "-".repeat(40) + "\n";
+                footer += centerText("Terima Kasih!", width) + "\n";
+                footer += centerText("Semoga Lekas Sembuh", width) + "\n";
+                footer += "-".repeat(40) + "\n";
+                footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
+                footer += centerText("yang sah", width) + "\n";
+                footer += "-".repeat(40) + "\n";
+                footer += centerText("Powered by EasyFlow", width) + "\n";
 
-            let footer = "";
-            footer += "-".repeat(40) + "\n";
-            footer += `Total   : ${transaksi.total}\n`;
-            footer += `Tunai   : ${transaksi.tunai}\n`;
-            footer += `Kembali : ${transaksi.kembali}\n`;
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Terima Kasih!", width) + "\n";
-            footer += centerText("Semoga Lekas Sembuh", width) + "\n";
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
-            footer += centerText("yang sah", width) + "\n";
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Powered by EasyFlow", width) + "\n";
-
-            return `${header}
+                return `${header}
 No.Transaksi : ${transaksi.kode}
 Tanggal      : ${transaksi.tanggal}
 Kasir        : ${transaksi.kasir}
 ${"-".repeat(40)}
 ${items}${footer}`;
-        }
+            }
 
-        function getReceiptTextWindow(width = 34) {
-            const toko = "Toko Obat Jaya Mulya";
-            const alamat = [
-                "Jl. Swadaya No.04 8, RT.8/RW.12,",
-                "Jatinegara, Kec. Cakung,",
-                "Kota Jakarta Timur, DKI Jakarta 13930"
-            ];
+            function getReceiptTextWindow(width = 34) {
+                const toko = "Toko Obat Jaya Mulya";
+                const alamat = [
+                    "Jl. Swadaya No.04 8, RT.8/RW.12,",
+                    "Jatinegara, Kec. Cakung,",
+                    "Kota Jakarta Timur, DKI Jakarta 13930"
+                ];
 
-            const transaksi = {
-                kode: "{{ $transaction->kode }}",
-                tanggal: "{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}",
-                kasir: "{{ $transaction->kasir ?? 'Kasir' }}",
-                total: "{{ formatRupiah($transaction->total_transaksi) }}",
-                tunai: "{{ formatRupiah($transaction->total_dibayar) }}",
-                kembali: "{{ formatRupiah($transaction->total_kembalian) }}"
-            };
+                const transaksi = {
+                    kode: "{{ $transaction->kode }}",
+                    tanggal: "{{ date('d/m/Y H:i:s', strtotime($transaction->created_at)) }}",
+                    kasir: "{{ $transaction->kasir ?? 'Kasir' }}",
+                    total: "{{ formatRupiah($transaction->total_final) }}",
+                    return: "{{ formatRupiah($transaction->total_return) }}",
+                    tunai: "{{ formatRupiah($transaction->total_dibayar) }}",
+                    kembali: "{{ formatRupiah($transaction->total_kembalian) }}"
+                };
 
-            let header = "\n" + centerText(toko, width) + "\n";
-            alamat.forEach(line => header += centerText(line, width) + "\n");
-            header += "-".repeat(40);
+                let header = "\n" + centerText(toko, width) + "\n";
+                alamat.forEach(line => header += centerText(line, width) + "\n");
+                header += "-".repeat(40);
 
-            // Daftar item
-            let items = "";
-            @foreach ($transaction->items as $item)
-                <?php
-                $nama = addslashes($item->obat->nama);
-                $qty = $item->qty;
-                $harga = formatRupiah($item->subtotal);
-                ?> {
-                    let nama = decodeHtml("{{ $nama }}");
-                    if (nama.length > (width - 12)) {
+                // Daftar item
+                let items = "";
+                @foreach ($transaction->items as $item)
+                    @if ($item->qty_final > 0)
+                    <?php
+                    $nama = addslashes($item->obat->nama);
+                    $qty = $item->qty_final;
+                    $hargaSatuan = formatRupiah($item->harga_jual);
+                    $subtotal = formatRupiah($item->subtotal_final);
+                    $returnQty = $item->qty_return;
+                    ?> {
+                        let nama = decodeHtml("{{ $nama }}");
+
+                        // Nama obat (1 baris sendiri)
                         items += nama + "\n";
-                        nama = "";
+
+                        // Kolom tetap
+                        let kiri = `  {{ $qty }} x {{ $hargaSatuan }}`.padEnd(18, " ");
+                        let kanan = "{{ $subtotal }}".padStart(14, " ");
+
+                        items += kiri + kanan + "\n";
+                        if ({{ $returnQty }} > 0) {
+                            items += "  Return {{ $returnQty }} : -{{ formatRupiah($item->subtotal_return) }}\n";
+                        }
                     }
-                    let line = nama.padEnd(width - 12, ' ') + `x${"{{ $qty }}"}`.padEnd(3, ' ') +
-                        "     {{ $harga }}".padStart(9, ' ');
-                    items += line + "\n";
+                    @endif
+                @endforeach
+
+
+                let footer = "";
+                footer += "-".repeat(40) + "\n";
+                footer += `Total   : ${transaksi.total}\n`;
+                if (parseInt("{{ $transaction->total_return }}") > 0) {
+                    footer += `Return  : -${transaksi.return}\n`;
                 }
-            @endforeach
+                footer += `Tunai   : ${transaksi.tunai}\n`;
+                footer += `Kembali : ${transaksi.kembali}\n`;
+                footer += "-".repeat(40) + "\n";
+                
+                footer += centerText("Terima Kasih!", width) + "\n";
+                footer += centerText("Semoga Lekas Sembuh", width) + "\n";
+                footer += "-".repeat(40) + "\n";
+                footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
+                footer += centerText("yang sah", width) + "\n";
+                footer += "-".repeat(40) + "\n";
+                footer += centerText("Powered by EasyFlow", width) + "\n";
 
-            let footer = "";
-            footer += "-".repeat(40) + "\n";
-            footer += `Total   : ${transaksi.total}\n`;
-            footer += `Tunai   : ${transaksi.tunai}\n`;
-            footer += `Kembali : ${transaksi.kembali}\n`;
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Terima Kasih!", width) + "\n";
-            footer += centerText("Semoga Lekas Sembuh", width) + "\n";
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Struk ini merupakan bukti pembayaran", width) + "\n";
-            footer += centerText("yang sah", width) + "\n";
-            footer += "-".repeat(40) + "\n";
-            footer += centerText("Powered by EasyFlow", width) + "\n";
-
-            return `${header}
+                return `${header}
 No.Transaksi : ${transaksi.kode}
 Tanggal      : ${transaksi.tanggal}
 Kasir        : ${transaksi.kasir}
 ${"-".repeat(40)}
 ${items}${footer}`;
-        }
+            }
 
-        // ======================================================
-        // ✅ 1. Print ke RawBT di Android
-        // ======================================================
-        function printRawBT() {
-            const escposReset = "\x1B\x40";
-            const escposSmallFont = "\x1B\x4D\x01"; // gunakan font kecil agar 32 kolom muat
-            const strukText = escposReset + escposSmallFont + getReceiptText(32);
-            const encoded = encodeURIComponent(strukText);
-            window.location.href = "intent:" + encoded + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
-        }
+            // ======================================================
+            // ✅ 1. Print ke RawBT di Android
+            // ======================================================
+            function printRawBT() {
+                const escposReset = "\x1B\x40";
+                const escposSmallFont = "\x1B\x4D\x01"; // gunakan font kecil agar 32 kolom muat
+                const strukText = escposReset + escposSmallFont + getReceiptText(32);
+                const encoded = encodeURIComponent(strukText);
+                window.location.href = "intent:" + encoded + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
+            }
 
-        // ======================================================
-        // ✅ 2. Print langsung di Browser (Laptop)
-        // ======================================================
-        function printWindow() {
-            // Ambil hasil teks struk dari fungsi getReceiptText()
-            const receipt = getReceiptTextWindow(34).replace(/\n/g, "<br>");
+            // ======================================================
+            // ✅ 2. Print langsung di Browser (Laptop)
+            // ======================================================
+            function printWindow() {
+                // Ambil hasil teks struk dari fungsi getReceiptText()
+                const receipt = getReceiptTextWindow(34).replace(/\n/g, "<br>");
 
 
-            // Buat container sementara untuk tampilan print
-            const printArea = document.createElement("div");
-            printArea.innerHTML = `
+                // Buat container sementara untuk tampilan print
+                const printArea = document.createElement("div");
+                printArea.innerHTML = `
                 <div style="width: 290px; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.3; color: #000;">
                     ${receipt}
                 </div>
             `;
 
-            // Simpan isi halaman asli
-            const originalContents = document.body.innerHTML;
+                // Simpan isi halaman asli
+                const originalContents = document.body.innerHTML;
 
-            // Ganti isi halaman dengan tampilan print
-            document.body.innerHTML = printArea.innerHTML;
+                // Ganti isi halaman dengan tampilan print
+                document.body.innerHTML = printArea.innerHTML;
 
-            // Jalankan dialog print browser
-            window.print();
+                // Jalankan dialog print browser
+                window.print();
 
-            // Setelah selesai print, kembalikan isi halaman semula
-            document.body.innerHTML = originalContents;
-        }
+                // Setelah selesai print, kembalikan isi halaman semula
+                document.body.innerHTML = originalContents;
+            }
     </script>
 
 

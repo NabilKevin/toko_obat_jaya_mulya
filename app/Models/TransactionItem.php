@@ -17,6 +17,10 @@ class TransactionItem extends Model
     {
         return $this->belongsTo(Obat::class, 'obat_id', 'id');
     }
+    public function returns()
+{
+    return $this->hasMany(TransactionReturn::class, 'transaction_item_id');
+}
     public function transaction()
     {
         return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
